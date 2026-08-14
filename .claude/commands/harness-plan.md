@@ -17,6 +17,10 @@ Read the harness brief, analyze its structure, and generate a step-by-step build
 - If `$ARGUMENTS` is a direct path to a `README.md` file — read it.
 - If `$ARGUMENTS` is free text — treat it as a harness description and output the build plan directly in the chat.
 
+## Reference: harness.design Editing Rules
+
+Compressed editing guide is at `.claude/arch_context.md`. Use it as the primary reference for schemas, operations, and conventions. Only re-read specific `read_editing_guide` MCP topics when uncertain or before complex edits — not every time the skill runs.
+
 ## Workflow
 
 ### Step 1: Read & Analyze the Brief
@@ -217,7 +221,7 @@ Save the build plan to:
 Once the plan is complete, recommend:
 
 ```text
-/harness-build harnesses/HARN-XXXX-<name>/
+/harness-do harnesses/HARN-XXXX-<name>/
 ```
 
-to hand the build plan off to the **harness-builder** agent for execution.
+to hand the build plan off to the **harness-builder** agent via the `/harness-do` orchestrator for execution.

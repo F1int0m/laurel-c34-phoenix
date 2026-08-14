@@ -152,7 +152,7 @@ When the requirements are gathered, generate the document using this template:
 
 **Ready for Build:** [Yes/No]
 If No: [What's still unclear?]
-**Next Step:** Pass to `/harness-plan` → `/harness-build`
+**Next Step:** Pass to `/harness-plan` → `/harness-do`
 
 ## Red Flags — Stop and Clarify
 
@@ -193,4 +193,4 @@ SAVE DETAILED SPEC to the `harnesses/` folder with the following structure:
 When the brief is approved, suggest the next steps:
 
 - `/harness-plan harnesses/HARN-XXXX-<name>/` — design the architecture (connectors, circuits, bundles)
-- `/harness-build` — invoke the harness-builder agent to build it in harness.design
+- `/harness-do harnesses/HARN-XXXX-<name>/` — execute the build plan via the harness-builder agent
