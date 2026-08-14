@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "harness-design": {
+      "type": "http",
+      "url": "https://app.harness.design/mcp",
+      "headers": {
+        "Authorization": "Bearer <token>"
+      }
+    }
+  }
+}
