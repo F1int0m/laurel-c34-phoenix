@@ -4,9 +4,13 @@
 
 MICTUNING is a **PDM** (Power Distribution Module), not a switch panel. Each channel provides fused power directly to the load. External relays only for starter (galvanic isolation).
 
-## Ground: Star Topology
+## Ground: Star Topology + Local Ground at Connector
 
-Each local ground bus (engine, cabin, trunk) connects independently to a common point. Daisy chain is **forbidden**.
+Each local ground point on the body (engine bay, cabin, trunk) connects independently to a common point. Daisy chain is **forbidden**.
+
+**Local Ground concept:** harnesses carry only +12V wires from MICTUNING. Each inline connector (X100, X200, X300, X400) has dedicated GND pins — one per consumer. The mating side of each connector connects these GND pins to the nearest body ground point with short wires (200–400 mm). No ground wires are routed through the harness back to the central panel.
+
+**X400 (ECU harness):** power is taken from the same location as MICTUNING PDM — they are physically close. +12V for IGN (CH1) and BATT come from the PDM area, not from the central panel.
 
 ## No Soldering
 
@@ -16,9 +20,13 @@ Crimp with adhesive heat-shrink only. Tug-test every connection.
 
 BATT ECU gets constant +12V directly from the main bus (separate 10A fuse), **not through MICTUNING**.
 
-## CH6 Stop Lights
+## Stop Lights — Direct from Main Bus
 
-CH6 (stop lights) activates automatically with IGN (CH1). Brake pedal switch breaks/makes the circuit from CH6 to lamps.
+Stop pedal switch (C4, 2-pin) is powered directly from the main bus (+12V constant), not from MICT CH6. When pressed, +12V passes through the switch to splice s-6, which feeds X200.5 (left stop) and X200.6 (right stop). Brake lights work regardless of ignition state (safety). CH6 is now a reserve channel (10A).
+
+## Fuses as Resistors in harness.design
+
+In the harness.design schematic, **fuses are represented as resistors**. This is a visual convention — the physical harness uses real fuses (MICTUNING channel fuses, standalone fuses like F_MAIN, BATT ECU 10A, OBD 5A). Resistors in the schematic correspond 1:1 to fuses in the BOM. The resistor value/description field carries the fuse amperage (e.g. "10A", "30A").
 
 ## Wire Gauge Reference
 

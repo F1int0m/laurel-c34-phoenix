@@ -2,8 +2,20 @@
 
 **Source brief:** harnesses/HARN-0001-central-panel/README.md
 **Generated:** 2026-08-15
-**Target harness:** new (documentId will be assigned on creation)
+**Status:** COMPLETED (2026-08-15)
+**Target harness:** K1vY (Laurel harness)
 **Strategy:** single-phase — центральная панель как единый модуль (10 коннекторов/терминалов, ~35 проводов, 5 сплайсов)
+
+## Accepted Deviations from Architecture
+
+Следующие отклонения от `architecture/01-central-panel.md` приняты как осознанные проектные решения:
+
+| Отклонение | План | Реализация | Причина принятия |
+|------------|------|------------|------------------|
+| relay-4 (Contact NO) не подключён | Провод 50 мм² от реле к стартеру | relay-4 не подключён | Силовой кабель к стартеру — внешний (не в харнесе панели) |
+| OBD без предохранителя 5A | FUSE_OBD между IGN-шиной и X300.5 | X300.5 напрямую к сплайсу S5 | Предохранитель будет добавлен физически при сборке |
+| Массовая топология через MICT.14 | 3 локальные шины → звезда, MICT масса через корпус | MICT.14 — центральный хаб (5 проводов к X400.4, X200.6, X300.6, relay-2, T2) | Функционально эквивалентно; MICT.14 заменяет отдельную звёздную точку |
+| Цвет провода OBD | жёлтый | красный | Некритично; цвет можно изменить при сборке |
 
 ## Build Order
 
@@ -34,7 +46,8 @@ Parts (connectorParts, contactParts, wireParts)
 | id | partNumber | numberOfCavities | hasShell | Notes |
 |----|------------|------------------|----------|-------|
 | cp-mict | MICTUNING-P1B | 13 | false | 12 каналов + BATT input; винтовые клеммы |
-| cp-x100 | DT-14-P | 14 | true | Передняя коса (panel side) |
+| cp-x100 | DT-14-P | 14 | true | Передняя коса (panel side), 8 used + 6 spare |
+| cp-x400 | DT-4-P | 4 | true | ECU sub-harness (panel side) |
 | cp-x200 | DT-8-P | 8 | true | Задняя коса (panel side) |
 | cp-x300 | DT-8-P | 8 | true | Салонная коса (panel side) |
 | cp-relay | BOSCH-ISO-4 | 4 | false | Реле стартера 4-конт. |
@@ -47,7 +60,7 @@ Parts (connectorParts, contactParts, wireParts)
 
 | id | partNumber | Notes |
 |----|------------|-------|
-| kpt-dt-14 | DT-14-socket | Гнёзда для X100 (14 шт.) |
+| kpt-dt-14 | DT-14-socket | Гнёзда для X100, X400 (14+4 шт.) |
 | kpt-dt-8 | DT-8-socket | Гнёзда для X200, X300 (8+8 шт.) |
 | kpt-relay | ISO-relay-socket | Контакты для реле гнезда (4 шт.) |
 | kpt-mict | MICT-P1B-socket | Контакты для MICTUNING (13 шт.) |
@@ -85,7 +98,8 @@ Parts (connectorParts, contactParts, wireParts)
 | id | label | partId | Cavities | Shell | Notes |
 |----|-------|--------|----------|-------|-------|
 | c-mict | MICT | cp-mict | 13 (1–13) | No | 12 каналов (1–12) + BATT input (13) |
-| c-x100 | X100 | cp-x100 | 14 (1–14) | Yes | Передняя коса, panel side |
+| c-x100 | X100 | cp-x100 | 14 (1–14) | Yes | Передняя коса, panel side (9 used + 5 spare) |
+| c-x400 | X400 | cp-x400 | 4 (1–4) | Yes | ECU sub-harness (panel side) |
 | c-x200 | X200 | cp-x200 | 8 (1–8) | Yes | Задняя коса, panel side |
 | c-x300 | X300 | cp-x300 | 8 (1–8) | Yes | Салонная коса, panel side |
 | c-relay | RELAY_START | cp-relay | 4 (1–4) | No | Реле стартера Bosch/ISO |
@@ -135,7 +149,31 @@ Parts (connectorParts, contactParts, wireParts)
 | Cavity id | Signal | Notes |
 |-----------|--------|-------|
 | 1 | IN (от BUS+) | |
-| 2 | OUT (к X100.10) | |
+| 2 | OUT (к X400.2) | |
+
+#### X400 (c-x400) — ECU sub-harness
+
+| Cavity id | Signal | Notes |
+|-----------|--------|-------|
+| 1 | IGN_ECU | IGN → ЭБУ IGSW/E1 |
+| 2 | BATT_ECU | BATT ECU после предохранителя |
+| 3 | STA_ECU | STA сигнал на ЭБУ |
+| 4 | GND_ENG | Масса двигателя |
+
+#### X100 (c-x100) — Front harness
+
+| Cavity id | Signal | Notes |
+|-----------|--------|-------|
+| 1 | CH2 Fan | Вентилятор (+) |
+| 2 | CH4 Light L | Левая фара ближний (+) |
+| 3 | CH4 Light R | Правая фара ближний (+) |
+| 4 | CH5 Start | Реле стартера катушка (+) |
+| 5 | CH10 Park L | Левый передний габарит (+) |
+| 6 | CH10 Park R | Правый передний габарит (+) |
+| 7 | CH11 L Turn | Левый передний поворотник (+) |
+| 8 | CH12 R Turn | Правый передний поворотник (+) |
+| 9 | GND_FRONT | Масса под капотом → звезда |
+| 10–14 | NC | Резерв |
 
 #### FUSE_OBD (c-fuse-obd)
 
@@ -164,7 +202,7 @@ Wire connects with handle `"Terminal"`.
 
 | id | Circuits joined | Location | Notes |
 |----|----------------|----------|-------|
-| s-1 | CH1 → X100.9 (IGN ЭБУ) + X300.5 (OBD) | Панель | IGN-шина |
+| s-1 | CH1 → X400.1 (IGN ЭБУ) + X300.5 (OBD) | Панель | IGN-шина |
 | s-2 | CH4 → X100.2 + X100.3 | Панель | Ближний L+R |
 | s-3 | CH10 → X100.5 + X100.6 + X200.1 | Панель | Габариты перед L + перед R + задние |
 | s-4 | CH11 → X100.7 + X200.2 | Панель | Поворотник левый перед + зад |
@@ -177,7 +215,7 @@ Wire connects with handle `"Terminal"`.
 | id | From (id.handle) | To (id.handle) | Gauge (mm2) | Color | Via | Notes |
 |----|------------------|----------------|-------------|-------|-----|-------|
 | w-ch1-ign | c-mict.1 | s-1.Splice | 0.75 | красн. | — | CH1 → сплайн IGN-шины |
-| w-ign-ecu | s-1.Splice | c-x100.9 | 0.75 | красн. | — | IGN → ЭБУ IGSW/E1 |
+| w-ign-ecu | s-1.Splice | c-x400.1 | 0.75 | красн. | — | IGN → ЭБУ IGSW/E1 |
 | w-ign-obd | s-1.Splice | c-fuse-obd.1 | 0.75 | зелён. | — | IGN → предохранитель OBD |
 | w-fuse-obd-out | c-fuse-obd.2 | c-x300.5 | 0.75 | зелён. | — | OBD+ после предохранителя |
 | w-ch2-fan | c-mict.2 | c-x100.1 | 2.5 | синий | — | Вентилятор |
@@ -186,7 +224,7 @@ Wire connects with handle `"Terminal"`.
 | w-head-l | s-2.Splice | c-x100.2 | 1.5 | красн. | — | Ближний L |
 | w-head-r | s-2.Splice | c-x100.3 | 1.5 | чёрн. | — | Ближний R |
 | w-ch5-start | c-mict.5 | c-relay.1 | 0.75 | зелён. | — | Катушка реле + |
-| w-sta-ecu | c-mict.5 | c-x100.11 | 0.75 | оранж. | — | STA на ЭБУ (от CH5 до реле) |
+| w-sta-ecu | c-mict.5 | c-x400.3 | 0.75 | оранж. | — | STA на ЭБУ (от CH5 до реле) |
 | w-ch6-stop | c-mict.6 | c-x300.3 | 0.75 | жёлт. | — | Стоп-сигнал (вход выкл.) |
 | w-stop-out | c-x300.4 | c-x200.4 | 0.75 | красн. | — | Стоп-сигнал (выход выкл. → зад) |
 | w-ch7-heater | c-mict.7 | c-x300.1 | 2.5 | красн. | — | Печка |
@@ -210,7 +248,7 @@ Wire connects with handle `"Terminal"`.
 | w-pwr-start-in | t-bus-plus.Terminal | c-relay.3 | 50 | красн. | — | Силовой вход реле |
 | w-start-out | c-relay.4 | c-x100.4 | 50 | красн. | — | Пусковой кабель → стартер |
 | w-batt-ecu-in | t-bus-plus.Terminal | c-fuse-batt-ecu.1 | 0.75 | красн. | — | BATT ECU до предохранителя |
-| w-batt-ecu-out | c-fuse-batt-ecu.2 | c-x100.10 | 0.75 | красн. | — | BATT ECU после предохранителя |
+| w-batt-ecu-out | c-fuse-batt-ecu.2 | c-x400.2 | 0.75 | красн. | — | BATT ECU после предохранителя |
 | w-relay-gnd | c-relay.2 | t-bus-minus.Terminal | 0.75 | чёрн. | — | Масса катушки реле |
 
 ### 5.3 Силовой ввод (АКБ → шина+)
@@ -243,9 +281,10 @@ Wire connects with handle `"Terminal"`.
 
 | id | From (id.handle) | To (id.handle) | Gauge (mm2) | Color | Notes |
 |----|------------------|----------------|-------------|-------|-------|
-| w-gnd-eng | c-x100.12 | t-bus-minus.Terminal | 2.5 | чёрн. | Масса двигателя → звезда |
+| w-gnd-eng | c-x400.4 | t-bus-minus.Terminal | 2.5 | чёрн. | Масса двигателя → звезда |
 | w-gnd-rear | c-x200.6 | t-bus-minus.Terminal | 2.5 | чёрн. | Масса багажника → звезда |
 | w-gnd-cabin | c-x300.6 | t-bus-minus.Terminal | 2.5 | чёрн. | Масса салона → звезда |
+| w-gnd-front | c-x100.9 | t-bus-minus.Terminal | 2.5 | чёрн. | Масса под капотом → звезда |
 
 ## 6. Twisted Wires
 
@@ -255,7 +294,10 @@ Wire connects with handle `"Terminal"`.
 
 | id | Source | Target | Wires | Approx. Length (mm) | Covering | Notes |
 |----|--------|--------|-------|---------------------|----------|-------|
-| b-mict-x100 | c-mict | c-x100 | w-ch1-ign, w-ign-ecu, w-ch2-fan, w-ch4-l, w-head-l, w-head-r, w-ch5-start, w-sta-ecu, w-ch10-lf, w-park-lf, w-park-rf, w-ch11-lt, w-turn-lf, w-ch12-rt, w-turn-rf, w-batt-ecu-out, w-start-out, w-gnd-eng | 300 | Tape 3M | Основной жгут → передняя коса |
+| b-mict-x100 | c-mict | c-x100 | w-ch2-fan, w-ch4-l, w-head-l, w-head-r, w-ch10-lf, w-park-lf, w-park-rf, w-ch11-lt, w-turn-lf, w-ch12-rt, w-turn-rf, w-gnd-front | 300 | Tape 3M | Основной жгут → передняя коса |
+| b-mict-x400 | c-mict | c-x400 | w-ch1-ign, w-ign-ecu, w-sta-ecu | 300 | Tape 3M | Жгут → ECU sub-harness |
+| b-fuse-x400 | c-fuse-batt-ecu | c-x400 | w-batt-ecu-out | 200 | Tape 3M | Предохранитель ECU → X400 |
+| b-x400-gnd | c-x400 | t-bus-minus | w-gnd-eng | 400 | Tape 3M | X400 → масса (звезда) |
 | b-mict-x200 | c-mict | c-x200 | w-ch3-fuel, w-park-rear, w-turn-lr, w-turn-rr, w-stop-out, w-gnd-rear | 200 | Tape 3M | Жгут → задняя коса |
 | b-mict-x300 | c-mict | c-x300 | w-ch6-stop, w-ch7-heater, w-ch9-wiper, w-ign-obd, w-fuse-obd-out, w-gnd-cabin | 200 | Tape 3M | Жгут → салонная коса |
 | b-power-in | c-kill | t-bus-plus | w-kill-fuse, w-fuse-bus, w-pwr-mict, w-pwr-start-in, w-batt-ecu-in, w-relay-gnd | 300 | PET braid | Силовой ввод |
@@ -297,14 +339,16 @@ Wire connects with handle `"Terminal"`.
 
 | Module A | Connector | Module B | Connector | Shared circuits |
 |----------|-----------|----------|-----------|----------------|
-| Central Panel | c-x100 | Front Harness | X100-panel | CH2, CH4, CH5, CH10, CH11, CH12, IGN ЭБУ, BATT ЭБУ, STA, GND, PWR_START |
+| Central Panel | c-x100 | Front Harness | X100-panel | CH2, CH4, CH10, CH11, CH12, GND |
+| Central Panel | c-x400 | ECU Sub-harness | X400-panel | IGN ECU, BATT ECU, STA, GND_ENG |
 | Central Panel | c-x200 | Rear Harness | X200-panel | CH3, CH6, CH10, CH11, CH12, GND |
 | Central Panel | c-x300 | Cabin Harness | X300-panel | CH6, CH7, CH9, CH1 (OBD), GND |
 
 ## Verification Checklist
 
 - [ ] c-mict: 13 cavities, no shell — matches cp-mict (13, hasShell=false)
-- [ ] c-x100: 14 cavities, shell — matches cp-x100 (14, hasShell=true)
+- [ ] c-x100: 14 cavities, shell — matches cp-x100 (14, hasShell=true) — 8 used + 6 spare
+- [ ] c-x400: 4 cavities, shell — matches cp-x400 (4, hasShell=true) — ECU connector
 - [ ] c-x200: 8 cavities, shell — matches cp-x200 (8, hasShell=true)
 - [ ] c-x300: 8 cavities, shell — matches cp-x300 (8, hasShell=true)
 - [ ] c-relay: 4 cavities, no shell — matches cp-relay (4, hasShell=false)
@@ -318,7 +362,8 @@ Wire connects with handle `"Terminal"`.
 - [ ] BUS+ and BUS- modeled as Ring terminals
 - [ ] Kill switch chain: external АКБ → c-kill.1 → c-kill.2 → c-fuse-main.1 → c-fuse-main.2 → t-bus-plus
 - [ ] CH8 Reserve: cavity 8 exists in MICT but no wire connected
-- [ ] Cavity 13,14 in X100 are NC (no wires)
+- [ ] Cavity 9 in X100 = GND_FRONT (w-gnd-front)
+- [ ] Cavity 10–14 in X100 are NC (no wires)
 - [ ] Cavity 7,8 in X200 are NC
 - [ ] Cavity 7,8 in X300 are NC
 
@@ -326,14 +371,14 @@ Wire connects with handle `"Terminal"`.
 
 | Element | Count |
 |---------|-------|
-| connectorParts | 9 |
+| connectorParts | 10 |
 | contactParts | 7 |
 | wireParts | 18 |
-| Connectors | 9 |
+| Connectors | 10 |
 | Terminals | 2 |
 | Splices | 5 |
 | Wires | ~30 |
-| Bundles | ~5 |
+| Bundles | ~8 |
 | Mates | 0 (в этом модуле) |
 | Operations (edit_document) | ~8–10 (parts, connectors, terminals, splices, wires, bundles) |
 

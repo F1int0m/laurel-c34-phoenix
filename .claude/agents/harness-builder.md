@@ -63,10 +63,17 @@ Not an architect; not a design validator. If the specification is incomplete or 
 5. **Wire connections:** `{id: <element_id>, handle: <cavity_id | 'Terminal' | 'Splice' | 'Left'/'Right'>}`
 6. **ID must be unique** across the entire document.
 7. **`announce_editing(documentId)`** — before every `edit_document`.
+8. **Fuses = Resistors.** When building in harness.design, represent every fuse as a **resistor** component. The resistor maps 1:1 to a physical fuse (MICTUNING channel fuse, standalone fuse like F_MAIN, BATT ECU 10A, OBD 5A, etc.). Use the resistor's description/value field for the fuse amperage (e.g. "10A", "30A"). This is a visual convention for the schematic only — the physical harness uses real fuses.
 
 ## Incremental Rebuild
 
 If part of the harness needs to be rebuilt: `get_component_ids` → `edit_document(op: "remove")` for the components to remove → rebuild them. The cascade will automatically remove related wires/bundles.
+
+## Language
+
+- **Think and reason in ENGLISH** — all internal deliberation, planning, and technical reasoning must be in English.
+- **Communicate with the user in RUSSIAN** — all user-facing output, reports, and messages must be in Russian.
+- Technical terms, component IDs, and code identifiers remain in their original form.
 
 ## Error Handling
 
