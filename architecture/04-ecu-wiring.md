@@ -1,97 +1,97 @@
-# Проводка ЭБУ (ECU Wiring)
+# ECU Wiring
 
-## 1. Назначение
+## 1. Purpose
 
-Подключение блока управления двигателем (ЭБУ) Toyota 1UZ VVT-i к системе проводки проекта. Проводка ЭБУ к двигателю (датчики, форсунки, катушки, MAF, O2 и т.д.) уже готова — это стоковая проводка Toyota. От проекта требуется только подать питание на ЭБУ и обеспечить сигналы стартера.
+Connecting the Toyota 1UZ VVT-i engine control unit (ECU) to the project wiring system. The ECU-to-engine wiring (sensors, injectors, coils, MAF, O2, etc.) is already complete — it's the stock Toyota harness. The project only needs to supply power to the ECU and provide starter signals.
 
-## 2. Разъём X400 — коса ЭБУ
+## 2. Connector X400 — ECU Harness
 
-Коса ЭБУ — самостоятельная коса со своим разъёмом **X400**. Питание берётся **от MICTUNING PDM** — PDM и ЭБУ физически расположены рядом, поэтому +12V для IGN (CH1) и BATT берутся локально от PDM/главной шины в районе PDM, а не от центральной панели. В косу идут **только +12V провода**. Никаких минусовых проводов не тянется через жгут обратно. На конце косы в разъёме X400 помимо + пинов заведены **выделенные GND-пины** — по одному на каждого потребителя. В ответной части разъёма эти GND-пины подключаются к ближайшей точке массы на кузове коротким проводом (200-400 мм).
+The ECU harness is a standalone harness with its own **X400** connector. Power is taken **from the MICTUNING PDM** — the PDM and ECU are physically close, so +12V for IGN (CH1) and BATT are taken locally from the PDM/main bus in the PDM area, not from the central panel. The harness carries **only +12V wires**. No ground wires are routed through the harness back. At the harness end, connector X400 has **dedicated GND pins** in addition to the + pins — one per consumer. On the mating side of the connector, these GND pins connect to the nearest body ground point with short wires (200–400 mm).
 
-### Распиновка X400
+### X400 Pinout
 
-| Пин X400 | Сигнал | Направление | Куда подключается | Сечение (мм²) | Примечание |
-|----------|--------|-------------|-------------------|----------------|------------|
-| 1 | +12V IGN | → (в косу) | ЭБУ (пин IGSW/E1) | 0.75 | От MICT CH1 (30A, Toggle) |
-| 2 | +12V BATT | → (в косу) | ЭБУ (пин BATT) | 0.75 | От главной шины + (пред. 10A), минуя MICT |
-| 3 | STA | → (в косу) | ЭБУ (пин STA) | 0.75 | От CH5 или выхода реле стартера |
-| 4 | GND IGN | ← (на кузов) | Точка массы кузова | 0.75 | В ответной части X400 — к ближайшей точке массы |
-| 5 | GND BATT | ← (на кузов) | Точка массы кузова | 0.75 | В ответной части X400 — к ближайшей точке массы |
+| X400 Pin | Signal | Direction | Connects To | Gauge (mm²) | Note |
+|----------|--------|-----------|-------------|-------------|------|
+| 1 | +12V IGN | → (into harness) | ECU (pin IGSW/E1) | 0.75 | From MICT CH1 (30A, Toggle) |
+| 2 | +12V BATT | → (into harness) | ECU (pin BATT) | 0.75 | From main bus+ (fuse 10A), bypassing MICT |
+| 3 | STA | → (into harness) | ECU (pin STA) | 0.75 | From CH5 or starter relay output |
+| 4 | GND IGN | ← (to body) | Body ground point | 0.75 | On X400 mating side — to nearest ground point |
+| 5 | GND BATT | ← (to body) | Body ground point | 0.75 | On X400 mating side — to nearest ground point |
 
-**Принцип:** +12V провода (пины 1-3) берутся от PDM/главной шины в районе MICTUNING и идут через косу к ЭБУ. GND-пины (4-5) — выделенные точки массы: в ответной части разъёма X400 они подключаются к ближайшей точке массы на кузове коротким проводом (200-400 мм).
+**Principle:** +12V wires (pins 1–3) are taken from the PDM/main bus in the MICTUNING area and run through the harness to the ECU. GND pins (4–5) are dedicated ground points: on the X400 mating side they connect to the nearest body ground point with short wires (200–400 mm).
 
-## 3. Цепи ЭБУ — только то, что подключает проект
+## 3. ECU Circuits — Only What the Project Connects
 
-### Питание ЭБУ
+### ECU Power
 
-| Цепь | Сигнал | Откуда | Куда | Сечение (мм²) | Предохранитель | Канал MICT | Через X400 | Примечание |
-|------|--------|--------|------|----------------|----------------|------------|------------|------------|
-| +12V IGN | Зажигание | MICT CH1 (30A, Toggle) | ЭБУ (пин IGSW/E1) | 0.75 | 30A (CH1) | CH1 | Пин 1 | Включает ЭБУ |
-| +12V BATT | Постоянное питание памяти | Главная шина + (отдельный предохранитель 10A) | ЭБУ (пин BATT) | 0.75 | 10A (отд.) | — | Пин 2 | Напрямую от шины, не через MICT |
+| Circuit | Signal | From | To | Gauge (mm²) | Fuse | MICT Channel | Via X400 | Note |
+|---------|--------|------|----|-------------|------|--------------|----------|------|
+| +12V IGN | Ignition | MICT CH1 (30A, Toggle) | ECU (pin IGSW/E1) | 0.75 | 30A (CH1) | CH1 | Pin 1 | Powers on the ECU |
+| +12V BATT | Constant memory power | Main bus+ (separate 10A fuse) | ECU (pin BATT) | 0.75 | 10A (separate) | — | Pin 2 | Direct from bus, not through MICT |
 
-**BATT** — постоянное питание для сохранения памяти ЭБУ (кодов, адаптивных значений). Подключается напрямую от главной шины + через отдельный предохранитель 10A, минуя MICTUNING. Это гарантирует, что ЭБУ сохраняет память даже при обесточивании каналов MICT. Провод +12V BATT проходит через разъём X400 (пин 2), а его GND — через пин 5 X400 к кузову.
+**BATT** — constant power for ECU memory retention (codes, adaptive values). Connected directly from main bus+ through a separate 10A fuse, bypassing MICTUNING. This ensures the ECU retains memory even when MICT channels are depowered. The +12V BATT wire passes through connector X400 (pin 2), and its GND goes through X400 pin 5 to the body.
 
-### Стартер
+### Starter
 
-| Цепь | Сигнал | Откуда | Куда | Сечение (мм²) | Предохранитель | Канал MICT | Через X400 | Примечание |
-|------|--------|--------|------|----------------|----------------|------------|------------|------------|
-| Катушка реле стартера | +12V (Momentary) | MICT CH5 (10A, Momentary) | Реле стартера (катушка) | 0.75 | 10A (CH5) | CH5 | — | Пока удерживаешь кнопку |
-| Сигнал STA на ЭБУ | +12V (старт) | CH5 или выход реле | ЭБУ (пин STA) | 0.75 | — | — | Пин 3 | ЭБУ знает, что стартер включён |
+| Circuit | Signal | From | To | Gauge (mm²) | Fuse | MICT Channel | Via X400 | Note |
+|---------|--------|------|----|-------------|------|--------------|----------|------|
+| Starter relay coil | +12V (Momentary) | MICT CH5 (10A, Momentary) | Starter relay (coil) | 0.75 | 10A (CH5) | CH5 | — | While button is held |
+| STA signal to ECU | +12V (start) | CH5 or relay output | ECU (pin STA) | 0.75 | — | — | Pin 3 | ECU knows starter is engaged |
 
-**Принцип работы:**
-1. CH5 (Momentary) подаёт +12V на катушку реле стартера
-2. Реле стартера коммутирует силовой + от главной шины до стартера (силовая цепь 50 мм² — см. 05-front-harness)
-3. ЭБУ получает сигнал STA о включении стартера — от того же CH5 или от силового выхода реле
+**Operating principle:**
+1. CH5 (Momentary) supplies +12V to the starter relay coil
+2. Starter relay switches high-current + from main bus to starter (50 mm² power circuit — see 05-front-harness)
+3. ECU receives STA signal that the starter is engaged — from the same CH5 or from the relay power output
 
-### Бензонасос
+### Fuel Pump
 
-Питание бензонасоса подаётся напрямую от MICT CH3 (20A, Toggle) — см. [[02-rear-harness]], цепь P18. ЭБУ не управляет бензонасосом.
+Fuel pump power is supplied directly from MICT CH3 (20A, Toggle) — see [[02-rear-harness]], circuit P18. The ECU does not control the fuel pump.
 
-### Генератор
+### Alternator
 
-Сигнал L от генератора к ЭБУ — если требуется, но это уже в готовой стоковой проводке Toyota. Отдельной цепи от проекта не нужно.
+Signal L from alternator to ECU — if required, but this is already in the stock Toyota wiring. No separate circuit needed from the project.
 
-## 4. Масса ЭБУ
+## 4. ECU Ground
 
-Силовые массы питания ЭБУ (IGN, BATT) теперь обеспечиваются через выделенные GND-пины разъёма X400:
+ECU power grounds (IGN, BATT) are now provided through dedicated GND pins on connector X400:
 
-- **GND IGN** (пин 4 X400) — масса цепи зажигания. В ответной части разъёма подключается к ближайшей точке массы на кузове (200-400 мм).
-- **GND BATT** (пин 5 X400) — масса цепи постоянного питания. В ответной части разъёма подключается к ближайшей точке массы на кузову (200-400 мм).
+- **GND IGN** (X400 pin 4) — ignition circuit ground. On the mating side, connects to the nearest body ground point (200–400 mm).
+- **GND BATT** (X400 pin 5) — constant power circuit ground. On the mating side, connects to the nearest body ground point (200–400 mm).
 
-Сенсорные и корпусные массы ЭБУ обеспечиваются **стоковой проводкой Toyota** — крепление к кузову через штатные точки. Это не меняется.
+ECU sensor and case grounds are provided by the **stock Toyota wiring** — mounting to body via factory ground points. This is unchanged.
 
-**Итого:**
-- Силовые массы питания (IGN, BATT) → через GND-пины X400 → кузов (проект)
-- Сенсорные / корпусные массы → стоковая проводка Toyota (без изменений)
+**Summary:**
+- Power grounds (IGN, BATT) → through X400 GND pins → body (project)
+- Sensor / case grounds → stock Toyota wiring (unchanged)
 
-## 5. Что НЕ описывается в этом файле
+## 5. What Is NOT Described in This File
 
-Следующие цепи уже готовы в стоковой проводке Toyota и не требуют проектирования:
+The following circuits are already complete in the stock Toyota wiring and require no design:
 
-- Датчики (MAF, O2, CKP, CMP, ECT, IAT, TPS, KNK и т.д.)
-- Форсунки
-- Катушки зажигания
-- VVT-i соленоиды
-- Сигналы MREL, FC, FPR от ЭБУ — не используются (бензонасос от MICT)
-- Диодные схемы OR для бензонасоса — не нужны
+- Sensors (MAF, O2, CKP, CMP, ECT, IAT, TPS, KNK, etc.)
+- Injectors
+- Ignition coils
+- VVT-i solenoids
+- MREL, FC, FPR signals from ECU — not used (fuel pump from MICT)
+- OR diode circuits for fuel pump — not needed
 
-## 6. Сводка подключений ЭБУ от проекта
+## 6. ECU Connections Summary from the Project
 
-### Сигнальные (+) подключения через X400
+### Signal (+) Connections via X400
 
-| Пин X400 | Пин ЭБУ | Сигнал | Источник | Сечение |
-|----------|---------|--------|----------|---------|
-| 1 | IGSW/E1 | +12V IGN | MICT CH1 | 0.75 мм² |
-| 2 | BATT | +12V постоянное | Главная шина + (пред. 10A) | 0.75 мм² |
-| 3 | STA | Сигнал стартера | CH5 или выход реле | 0.75 мм² |
+| X400 Pin | ECU Pin | Signal | Source | Gauge |
+|----------|---------|--------|--------|-------|
+| 1 | IGSW/E1 | +12V IGN | MICT CH1 | 0.75 mm² |
+| 2 | BATT | +12V constant | Main bus+ (fuse 10A) | 0.75 mm² |
+| 3 | STA | Starter signal | CH5 or relay output | 0.75 mm² |
 
-### GND-пины X400 (к кузову в ответной части)
+### X400 GND Pins (to body on mating side)
 
-| Пин X400 | Сигнал | Куда | Сечение |
-|----------|--------|------|---------|
-| 4 | GND IGN | Точка массы кузова (200-400 мм) | 0.75 мм² |
-| 5 | GND BATT | Точка массы кузова (200-400 мм) | 0.75 мм² |
+| X400 Pin | Signal | To | Gauge |
+|----------|--------|----|-------|
+| 4 | GND IGN | Body ground point (200–400 mm) | 0.75 mm² |
+| 5 | GND BATT | Body ground point (200–400 mm) | 0.75 mm² |
 
-Бензонасос (CH3) — не цепь ЭБУ, см. [[02-rear-harness]].
+Fuel pump (CH3) — not an ECU circuit, see [[02-rear-harness]].
 
-Всё остальное — стоковая проводка Toyota, уже готова.
+Everything else — stock Toyota wiring, already complete.

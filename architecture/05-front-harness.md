@@ -1,246 +1,246 @@
-# Передняя коса (Front Harness) — X100
+# Front Harness — X100
 
-## Назначение
+## Purpose
 
-Передняя коса соединяет центральную панель (MICTUNING PDM, главная шина +) с потребителями подкапотного пространства: фарами ближнего света, вентилятором охлаждения, стартером (через реле), генератором, передними габаритами и передними поворотниками. Цепи питания ЭБУ (IGN, BATT, STA) проходят через переднюю косу физически, но описаны в [[04-ecu-wiring]]. Коса подключается к панели через разъём **X100** (20-pin). Силовые кабели (стартер 50 мм², генератор 6-10 мм²) подключаются к шине + и реле стартера через болтовые клеммы, минуя разъём X100.
+The front harness connects the central panel (MICTUNING PDM, main bus+) to engine bay consumers: low beam headlights, cooling fan, starter (via relay), alternator, front parking lights, and front turn signals. ECU power circuits (IGN, BATT, STA) pass through the front harness physically but are described in [[04-ecu-wiring]]. The harness connects to the panel via connector **X100** (20-pin). Power cables (starter 50 mm², alternator 6-10 mm²) connect to bus+ and the starter relay via ring terminals, bypassing connector X100.
 
-**Концепция локальной массы:** от MICTUNING в косу идут ТОЛЬКО +12V провода. Никаких минусовых проводов не тянется через жгут обратно к панели. На конце косы в разъёме X100 помимо + пинов заведены выделенные GND-пины — по одному на каждого потребителя. В ответной части разъёма эти GND-пины подключаются к ближайшей точке массы на кузове коротким проводом (200-400 мм).
+**Local ground concept:** from MICTUNING to the harness, ONLY +12V wires run. No ground wires are routed through the harness back to the panel. At the end of the harness, connector X100 has dedicated GND pins in addition to + pins — one per consumer. On the mating side of the connector, these GND pins connect to the nearest body ground point with short wires (200-400 mm).
 
-## Что НЕ входит в переднюю косу
+## What is NOT in the Front Harness
 
-- **Питание ЭБУ (IGN, BATT, STA)** — описано в [[04-ecu-wiring]], хотя провода проходят через переднюю косу
-- **Датчики ЭБУ, форсунки, катушки** — готовая стоковая проводка Toyota
-- **Кондиционер** — удалён
-- **Клаксон** — не нужен
-- **Стоп-сигналы** — Stop Pedal (прямое питание от главной шины) → splice s-6 → X200
-- **Задние габариты / задние поворотники** — через заднюю косу (X200)
+- **ECU power (IGN, BATT, STA)** — described in [[04-ecu-wiring]], though wires pass through the front harness
+- **ECU sensors, injectors, coils** — stock Toyota wiring (already complete)
+- **A/C** — removed
+- **Horn** — not needed
+- **Stop lights** — Stop Pedal (direct power from main bus) → splice s-6 → X200
+- **Rear parking lights / rear turn signals** — via rear harness (X200)
 
-## Маршрут прокладки
+## Routing
 
-От центральной панели коса проходит через моторный щит в подкапотное пространство. Ветви расходятся к фарам (левая/правая), вентилятору радиатора, реле стартера и генератору.
-
-```
-Центральная панель (MICTUNING PDM, шина +)
-    │
-    ├── X100 (20-pin) ──→ Левая фара (ближний, CH4) + GND
-    │                 ──→ Правая фара (ближний, CH4) + GND
-    │                 ──→ Левый передний габарит (CH10) + GND
-    │                 ──→ Правый передний габарит (CH10) + GND
-    │                 ──→ Левый передний поворотник (CH11) + GND
-    │                 ──→ Правый передний поворотник (CH12) + GND
-    │                 ──→ Вентилятор охлаждения (CH2, прямое питание PDM) + GND
-    │                 ──→ Реле стартера (CH5, слаботочное упр.) + GND
-    │
-    │  GND-пины X100 → ответная часть → короткие провода → точки массы на кузове
-    │
-    ├── Болтовая клемма ──→ 50 мм² ──→ Реле стартера ──→ 50 мм² ──→ Стартер
-    │
-    └── Болтовая клемма ──→ 6-10 мм² ──→ Генератор (B/S, зарядный кабель)
-```
-
-## Разъём X100 — распиновка
-
-Разъём X100 — 20-pin. Содержит 8 цепей +12V и 8 выделенных GND-пинов (по одному на каждого потребителя). В ответной части разъёма каждый GND-пин соединяется коротким проводом (200-400 мм) с ближайшей точкой массы на кузове.
-
-### Цепи +12V
-
-| Pin | Сигнал | Куда идёт | Сечение (мм²) | Примечание |
-|-----|--------|-----------|----------------|------------|
-| 1 | +12V (MICT CH2) | Вентилятор (+) | 2.5 | Прямое питание от PDM, 30A |
-| 2 | +12V (MICT CH4) | Левая фара (ближний +) | 1.5 | |
-| 3 | +12V (MICT CH4) | Правая фара (ближний +) | 1.5 | |
-| 4 | +12V (MICT CH5) | Реле стартера (катушка +) | 0.75 | Слаботочное управление |
-| 5 | +12V (MICT CH10) | Левый передний габарит (+) | 0.75 | |
-| 6 | +12V (MICT CH10) | Правый передний габарит (+) | 0.75 | |
-| 7 | +12V (MICT CH11) | Левый передний поворотник (+) | 0.75 | Flash |
-| 8 | +12V (MICT CH12) | Правый передний поворотник (+) | 0.75 | Flash |
-
-### Выделенные GND-пины
-
-| Pin | Сигнал | Куда идёт (ответная часть) | Сечение (мм²) | Примечание |
-|-----|--------|----------------------------|----------------|------------|
-| 9 | GND фара левая | Точка массы на кузове (200-400 мм) | 1.5 | Ближний свет |
-| 10 | GND фара правая | Точка массы на кузове (200-400 мм) | 1.5 | Ближний свет |
-| 11 | GND вентилятор | Точка массы на кузове (200-400 мм) | 2.5 | |
-| 12 | GND габарит левый | Точка массы на кузове (200-400 мм) | 0.75 | |
-| 13 | GND габарит правый | Точка массы на кузове (200-400 мм) | 0.75 | |
-| 14 | GND поворотник левый | Точка массы на кузове (200-400 мм) | 0.75 | |
-| 15 | GND поворотник правый | Точка массы на кузове (200-400 мм) | 0.75 | |
-| 16 | GND реле стартера (катушка) | Точка массы на кузове (200-400 мм) | 0.75 | Масса катушки реле |
-
-### Резерв
-
-| Pin | Сигнал | Примечание |
-|-----|--------|------------|
-| 17 | NC | Резерв |
-| 18 | NC | Резерв |
-| 19 | NC | Резерв |
-| 20 | NC | Резерв |
-
-> **Силовые кабели** (50 мм² к стартеру, 6-10 мм² к генератору) подключаются к шине + и реле стартера через болтовые клеммы — они не проходят через разъём X100. Массы стартера и генератора идут на кузов напрямую, не через разъём.
-
-## Таблица цепей передней косы
-
-### Цепи питания от MICTUNING PDM
-
-| ID | Откуда | Куда | Длина (мм) | Сечение (мм²) | Цвет | Пред. | Канал MICT | Примечание |
-|----|--------|------|-----------|---------------|------|-------|------------|------------|
-| P03 | MICT CH2 (Fan) | Вентилятор (+) | ≈ 800 | 2.5 | синий | 30A | CH2 | Прямое питание от PDM |
-| P04 | MICT CH4 (Light) | Левая фара (ближний +) | ≈ 800 | 1.5 | красн. | 15A | CH4 | |
-| P05 | MICT CH4 (Light) | Правая фара (ближний +) | ≈ 800 | 1.5 | чёрн. | 15A | CH4 | |
-| P06 | MICT CH5 (Start) | Реле стартера (катушка +) | ≈ 600 | 0.75 | зелён. | 10A | CH5 | Слаботочное упр. (катушка ~0.15A) |
-| P07 | MICT CH10 (Park) | Левый передний габарит (+) | ≈ 800 | 0.75 | белый | 15A | CH10 | |
-| P08 | MICT CH10 (Park) | Правый передний габарит (+) | ≈ 800 | 0.75 | голуб. | 15A | CH10 | |
-| P09 | MICT CH11 (L Turn) | Левый передний поворотник (+) | ≈ 800 | 0.75 | жёлтый | 10A | CH11 | Flash |
-| P10 | MICT CH12 (R Turn) | Правый передний поворотник (+) | ≈ 800 | 0.75 | зелён. | 10A | CH12 | Flash |
-
-### Силовые цепи (напрямую от шины +, минуя MICTUNING)
-
-| ID | Откуда | Куда | Длина (мм) | Сечение (мм²) | Цвет | Пред. | Примечание |
-|----|--------|------|-----------|---------------|------|-------|------------|
-| P20 | Шина + (салон) | Реле стартера (силовой вход) | ≈ 600 | 50 | красн. | — | Пусковой кабель, болтовая клемма |
-| P21 | Реле стартера (силовой выход) | Стартер | ≈ 1500 | 50 | красн. | — | Пусковой кабель, болтовая клемма |
-| P22 | Шина + (салон) | Генератор (B/S) | ≈ 1500 | 6-10 | красн. | 80A | Зарядный кабель, болтовая клемма |
-
-> **Принцип:** Силовые кабели стартера (50 мм²) и генератора (6-10 мм²) подключаются к главной шине + напрямую — минуя MICTUNING. Это отдельные цепи, которые не проходят через PDM.
-
-### Массовые цепи передней косы (провода в ответной части X100)
-
-Массовые провода не проходят через косу от потребителей обратно к панели. Вместо этого каждый потребитель получает выделенный GND-пин в разъёме X100, а в ответной части разъёма от этого пина идёт короткий провод к ближайшей точке массы на кузове.
-
-| ID | Откуда (GND-пин X100) | Куда | Длина (мм) | Сечение (мм²) | Цвет | Примечание |
-|----|------------------------|------|-----------|---------------|------|------------|
-| G01 | Pin 9 (GND фара левая) | Точка массы на кузове | ≈ 200-400 | 1.5 | чёрн. | Ближний свет |
-| G02 | Pin 10 (GND фара правая) | Точка массы на кузове | ≈ 200-400 | 1.5 | чёрн. | Ближний свет |
-| G03 | Pin 11 (GND вентилятор) | Точка массы на кузове | ≈ 200-400 | 2.5 | чёрн. | |
-| G04 | Pin 12 (GND габарит левый) | Точка массы на кузове | ≈ 200-400 | 0.75 | чёрн. | |
-| G05 | Pin 13 (GND габарит правый) | Точка массы на кузове | ≈ 200-400 | 0.75 | чёрн. | |
-| G06 | Pin 14 (GND поворотник левый) | Точка массы на кузове | ≈ 200-400 | 0.75 | чёрн. | |
-| G07 | Pin 15 (GND поворотник правый) | Точка массы на кузове | ≈ 200-400 | 0.75 | чёрн. | |
-| G08 | Pin 16 (GND реле стартера катушка) | Точка массы на кузове | ≈ 200-400 | 0.75 | чёрн. | Масса катушки реле |
-
-> **Принцип:** В самой косе (от панели до разъёма X100) массовых проводов нет — только +12V. Все массы подключаются в ответной части разъёма X100 короткими проводами к точкам массы на кузове.
-
-## Описание подключений
-
-### Ближний свет (CH4)
-
-Две галогенные фары подключены параллельно к одному каналу MICT CH4 (15A, Toggle). Питание +12V подаётся **напрямую от PDM** — без внешних реле, так как MICTUNING является PDM и подаёт силовое питание на нагрузку. Каждая фара — отдельный провод от CH4 (P04, P05), сечение 1.5 мм² (галогенная лампа ~5A). Масса каждой фары — через выделенный GND-пин X100 (Pin 9, Pin 10), в ответной части подключается к точке массы на кузове коротким проводом (G01, G02).
-
-**Суммарный ток:** ~10A (две лампы по ~5A). Предохранитель CH4 — 15A, запас достаточный.
-
-### Вентилятор охлаждения (CH2)
-
-Один вентилятор охлаждения запитан **напрямую от канала MICT CH2 (30A, Toggle)** — без внешних реле, так как PDM подаёт силовое питание. Сечение провода 2.5 мм². Масса вентилятора — через выделенный GND-пин X100 (Pin 11), в ответной части подключается к точке массы на кузове коротким проводом (G03).
-
-**Ток вентилятора:** ~15-20A. Предохранитель CH2 — 30A, запас достаточный.
-
-> **Примечание:** Управление вентилятором — ручное (Toggle на MICTUNING). Для автоматического включения по температуре потребуется дополнительный термодатчик и схема управления — это открытый вопрос.
-
-### Реле стартера (CH5)
-
-Канал MICT CH5 (10A, Momentary) подаёт +12V на катушку внешнего реле стартера — это **слаботочная цепь управления** (катушка реле ~0.15A, сечение 0.75 мм²). Реле стартера коммутирует силовой +50 мм² от главной шины до стартера.
-
-**Схема включения:**
+From the central panel, the harness passes through the firewall into the engine bay. Branches run to the headlights (left/right), radiator fan, starter relay, and alternator.
 
 ```
-Главная шина + ──── 50 мм² ──── Реле стартера (силовые контакты) ──── 50 мм² ──── Стартер
-                                          │
-                                     Катушка реле
-                                      │        │
-                               CH5 (+12V)    GND (G08)
-                              (Momentary)
+Central Panel (MICTUNING PDM, Bus+)
+    │
+    ├── X100 (20-pin) ──→ Left headlight (low beam, CH4) + GND
+    │                 ──→ Right headlight (low beam, CH4) + GND
+    │                 ──→ Left front parking light (CH10) + GND
+    │                 ──→ Right front parking light (CH10) + GND
+    │                 ──→ Left front turn signal (CH11) + GND
+    │                 ──→ Right front turn signal (CH12) + GND
+    │                 ──→ Cooling fan (CH2, direct PDM power) + GND
+    │                 ──→ Starter relay (CH5, low-current control) + GND
+    │
+    │  X100 GND pins → mating side → short wires → body ground points
+    │
+    ├── Ring terminal ──→ 50 mm² ──→ Starter relay ──→ 50 mm² ──→ Starter
+    │
+    └── Ring terminal ──→ 6-10 mm² ──→ Alternator (B/S, charge cable)
 ```
 
-1. Кнопка стартёра удерживается → CH5 подаёт +12V (Momentary) на катушку реле
-2. Реле замыкает силовые контакты → 50 мм² от шины + до стартера
-3. Стартер крутит
-4. Кнопка отпущена → CH5 отключается → реле размыкается → стартер стоп
+## Connector X100 — Pinout
 
-Сигнал STA на ЭБУ — от CH5 или от силового выхода реле — чтобы ЭБУ знал, что стартер включён (см. [[04-ecu-wiring]] и открытый вопрос #2).
+Connector X100 is 20-pin. It contains 8 +12V circuits and 8 dedicated GND pins (one per consumer). On the mating side, each GND pin connects via a short wire (200-400 mm) to the nearest body ground point.
 
-### Генератор (зарядный кабель)
+### +12V Circuits
 
-Силовой кабель 6-10 мм² от главной шины + до вывода B/S генератора — это **зарядный кабель** (80A). Генератор стоковый 1UZ, 80-100A. Кабель подключается через болтовую клемму, минуя MICTUNING и разъём X100.
+| Pin | Signal | Destination | Gauge (mm²) | Notes |
+|-----|--------|-------------|--------------|-------|
+| 1 | +12V (MICT CH2) | Fan (+) | 2.5 | Direct PDM power, 30A |
+| 2 | +12V (MICT CH4) | Left headlight (low beam +) | 1.5 | |
+| 3 | +12V (MICT CH4) | Right headlight (low beam +) | 1.5 | |
+| 4 | +12V (MICT CH5) | Starter relay coil (+) | 0.75 | Low-current control |
+| 5 | +12V (MICT CH10) | Left front parking (+) | 0.75 | |
+| 6 | +12V (MICT CH10) | Right front parking (+) | 0.75 | |
+| 7 | +12V (MICT CH11) | Left front turn signal (+) | 0.75 | Flash |
+| 8 | +12V (MICT CH12) | Right front turn signal (+) | 0.75 | Flash |
 
-Сигнал L (лампа зарядки) от генератора — в стоковой проводке Toyota. Отдельной цепи от проекта не требуется.
+### Dedicated GND Pins
 
-### ЭБУ двигателя (CH1 + BATT + STA)
+| Pin | Signal | Destination (mating side) | Gauge (mm²) | Notes |
+|-----|--------|---------------------------|--------------|-------|
+| 9 | GND headlight left | Body ground point (200-400 mm) | 1.5 | Low beam |
+| 10 | GND headlight right | Body ground point (200-400 mm) | 1.5 | Low beam |
+| 11 | GND fan | Body ground point (200-400 mm) | 2.5 | |
+| 12 | GND parking left | Body ground point (200-400 mm) | 0.75 | |
+| 13 | GND parking right | Body ground point (200-400 mm) | 0.75 | |
+| 14 | GND turn signal left | Body ground point (200-400 mm) | 0.75 | |
+| 15 | GND turn signal right | Body ground point (200-400 mm) | 0.75 | |
+| 16 | GND starter relay coil | Body ground point (200-400 mm) | 0.75 | Relay coil ground |
 
-Цепи питания ЭБУ (IGN, BATT, STA) физически проходят через переднюю косу, но описаны в [[04-ecu-wiring]].
+### Reserve
 
-### Передние габариты (CH10)
+| Pin | Signal | Notes |
+|-----|--------|-------|
+| 17 | NC | Reserve |
+| 18 | NC | Reserve |
+| 19 | NC | Reserve |
+| 20 | NC | Reserve |
 
-Два передних габаритных огня запитаны параллельно от канала CH10 MICT (15A, Toggle). Это та же цепь, что питает задние габариты через заднюю косу (X200). Передние габариты идут через переднюю косу (P07, P08), задние — через заднюю косу. Обе пары запитаны от одного канала CH10.
+> **Power cables** (50 mm² to starter, 6-10 mm² to alternator) connect to bus+ and starter relay via ring terminals — they do not pass through connector X100. Starter and alternator grounds go to the body directly, not through the connector.
 
-**Ток каждого габарита:** <1A (лампа 5W). Сечение 0.75 мм².
+## Front Harness Circuit Table
 
-### Передние поворотники (CH11/CH12)
+### Power Circuits from MICTUNING PDM
 
-Левый передний поворотник запитан от CH11 (Flash), правый передний — от CH12 (Flash). Задние поворотники той же стороны идут через заднюю косу. Каждый канал MICT (CH11/CH12) питает передний + задний поворотник одной стороны.
+| ID | From | To | Length (mm) | Gauge (mm²) | Color | Fuse | MICT Ch | Notes |
+|----|------|----|-------------|--------------|-------|------|---------|-------|
+| P03 | MICT CH2 (Fan) | Fan (+) | ≈ 800 | 2.5 | Blue | 30A | CH2 | Direct PDM power |
+| P04 | MICT CH4 (Light) | Left headlight (low beam +) | ≈ 800 | 1.5 | Red | 15A | CH4 | |
+| P05 | MICT CH4 (Light) | Right headlight (low beam +) | ≈ 800 | 1.5 | Black | 15A | CH4 | |
+| P06 | MICT CH5 (Start) | Starter relay coil (+) | ≈ 600 | 0.75 | Green | 10A | CH5 | Low-current control (coil ~0.15A) |
+| P07 | MICT CH10 (Park) | Left front parking (+) | ≈ 800 | 0.75 | White | 15A | CH10 | |
+| P08 | MICT CH10 (Park) | Right front parking (+) | ≈ 800 | 0.75 | Light Blue | 15A | CH10 | |
+| P09 | MICT CH11 (L Turn) | Left front turn signal (+) | ≈ 800 | 0.75 | Yellow | 10A | CH11 | Flash |
+| P10 | MICT CH12 (R Turn) | Right front turn signal (+) | ≈ 800 | 0.75 | Green | 10A | CH12 | Flash |
 
-**Ток каждого поворотника:** ~1.7A (лампа 21W). Сечение 0.75 мм².
+### High-Current Circuits (direct from bus+, bypassing MICTUNING)
 
-## Массовые точки под капотом
+| ID | From | To | Length (mm) | Gauge (mm²) | Color | Fuse | Notes |
+|----|------|----|-------------|--------------|-------|------|-------|
+| P20 | Bus+ (cabin) | Starter relay (power input) | ≈ 600 | 50 | Red | — | Starter cable, ring terminal |
+| P21 | Starter relay (power output) | Starter | ≈ 1500 | 50 | Red | — | Starter cable, ring terminal |
+| P22 | Bus+ (cabin) | Alternator (B/S) | ≈ 1500 | 6-10 | Red | 80A | Charge cable, ring terminal |
 
-Массовые точки под капотом — это точки на кузове, к которым от ответной части разъёма X100 приходят короткие GND-провода (200-400 мм). Каждая точка массы на кузове подключена **отдельным проводом напрямую к общей точке** (АКБ- / кузов) — звёздная топология, без последовательного соединения (daisy chain).
+> **Principle:** Starter (50 mm²) and alternator (6-10 mm²) power cables connect to main bus+ directly — bypassing MICTUNING. These are separate circuits that do not pass through the PDM.
 
-1. **Точка массы — левая сторона (ближайшая к фаре/габариту/поворотнику)** — к ней подключаются:
-   - GND фара левая (G01, Pin 9)
-   - GND габарит левый (G04, Pin 12)
-   - GND поворотник левый (G06, Pin 14)
+### Front Harness Ground Circuits (wires on mating side of X100)
 
-2. **Точка массы — правая сторона (ближайшая к фаре/габариту/поворотнику)** — к ней подключаются:
-   - GND фара правая (G02, Pin 10)
-   - GND габарит правый (G05, Pin 13)
-   - GND поворотник правый (G07, Pin 15)
+Ground wires do not run through the harness from consumers back to the panel. Instead, each consumer gets a dedicated GND pin in connector X100, and on the mating side a short wire runs from that pin to the nearest body ground point.
 
-3. **Точка массы — вентилятор** — к ней подключается:
-   - GND вентилятор (G03, Pin 11)
+| ID | From (X100 GND pin) | To | Length (mm) | Gauge (mm²) | Color | Notes |
+|----|---------------------|----|-------------|--------------|-------|-------|
+| G01 | Pin 9 (GND headlight left) | Body ground point | ≈ 200-400 | 1.5 | Black | Low beam |
+| G02 | Pin 10 (GND headlight right) | Body ground point | ≈ 200-400 | 1.5 | Black | Low beam |
+| G03 | Pin 11 (GND fan) | Body ground point | ≈ 200-400 | 2.5 | Black | |
+| G04 | Pin 12 (GND parking left) | Body ground point | ≈ 200-400 | 0.75 | Black | |
+| G05 | Pin 13 (GND parking right) | Body ground point | ≈ 200-400 | 0.75 | Black | |
+| G06 | Pin 14 (GND turn signal left) | Body ground point | ≈ 200-400 | 0.75 | Black | |
+| G07 | Pin 15 (GND turn signal right) | Body ground point | ≈ 200-400 | 0.75 | Black | |
+| G08 | Pin 16 (GND starter relay coil) | Body ground point | ≈ 200-400 | 0.75 | Black | Relay coil ground |
 
-4. **Точка массы — реле стартера** — к ней подключается:
-   - GND реле стартера катушка (G08, Pin 16)
+> **Principle:** Within the harness itself (from panel to connector X100), there are no ground wires — only +12V. All grounds connect on the mating side of X100 with short wires to body ground points.
 
-5. **Масса двигателя** — толстый провод от корпуса двигателя к общей точке массы (звезда). К ней подключены массы генератора и стартера напрямую, не через разъём X100.
+## Connection Details
 
-6. **Топология массы — звезда:** Каждая точка массы на кузове подключена **отдельным проводом напрямую к общей точке** (АКБ- / кузов), а не последовательно (daisy chain). Это устраняет «плавающие» массы.
+### Low Beam (CH4)
 
-## Сечения проводов — обоснование
+Two halogen headlights connected in parallel to a single MICT CH4 channel (15A, Toggle). +12V power is supplied **directly from the PDM** — no external relays, since MICTUNING is a PDM that delivers power directly to the load. Each headlight has its own wire from CH4 (P04, P05), gauge 1.5 mm² (halogen bulb ~5A). Each headlight grounds through a dedicated X100 GND pin (Pin 9, Pin 10), connecting on the mating side to a body ground point via short wire (G01, G02).
 
-| Потребитель | Ток (А) | Сечение (мм²) | Обоснование |
-|------------|---------|---------------|-------------|
-| Ближний свет (каждая фара) | ~5 | 1.5 | Галогенная лампа H4/H7 55W, стандартное сечение |
-| Вентилятор охлаждения | 15-20 | 2.5 | Один вентилятор, прямое питание от PDM (CH2, 30A) |
-| Управление реле стартера (катушка) | ~0.15 | 0.75 | Слаботочная цепь, ток катушки реле |
-| Передние габариты (каждый) | <1 | 0.75 | Лампы 5W |
-| Передние поворотники (каждый) | ~1.7 | 0.75 | Лампы 21W |
-| Силовой кабель стартера | 200-400 (пуск) | 50 | Пусковой ток, длинная трасса |
-| Зарядный кабель генератора | до 80 | 6-10 | Номинальный ток генератора 1UZ |
-| GND вентилятора (G03) | 15-20 | 2.5 | Соответствует цепи питания |
-| GND фар (G01, G02) | ~5 | 1.5 | Соответствует цепи питания |
-| GND габаритов (G04, G05) | <1 | 0.75 | Соответствует цепи питания |
-| GND поворотников (G06, G07) | ~1.7 | 0.75 | Соответствует цепи питания |
-| GND реле стартера катушка (G08) | ~0.15 | 0.75 | Соответствует цепи питания |
+**Total current:** ~10A (two bulbs at ~5A each). CH4 fuse — 15A, adequate margin.
 
-## Границы ответственности с задней косой
+### Cooling Fan (CH2)
 
-| Цепь | Передняя коса (X100) | Задняя коса (X200) |
-|------|----------------------|---------------------|
-| Ближний свет (CH4) | Обе фары | — |
-| Габариты (CH10) | Передние габариты | Задние габариты |
-| Левый поворотник (CH11) | Передний левый | Задний левый |
-| Правый поворотник (CH12) | Передний правый | Задний правый |
-| Вентилятор (CH2) | 1 шт, под капотом | — |
-| Реле стартера (CH5) | Реле + силовой кабель | — |
-| Генератор | Зарядный кабель | — |
-| Стоп-сигналы (Stop Pedal) | — | Задние стоп-сигналы (L+R раздельно, через splice s-6) |
-| Бензонасос (CH3) | — | Топливный насос |
+One cooling fan powered **directly from MICT CH2 (30A, Toggle)** — no external relays, since the PDM delivers power directly. Wire gauge 2.5 mm². Fan grounds through dedicated X100 GND pin (Pin 11), connecting on the mating side to a body ground point via short wire (G03).
 
-Оба жгута получают питание от центральной панели. Каналы CH10/CH11/CH12 разветвляются на панели: одна ветвь уходит в переднюю косу, другая — в заднюю.
+**Fan current:** ~15-20A. CH2 fuse — 30A, adequate margin.
 
-## Открытые вопросы
+> **Note:** Fan control is manual (MICTUNING Toggle). For automatic temperature-based operation, an additional thermo-switch and control circuit would be needed — this is an open question.
 
-1. **Автоматическое управление вентилятором** — CH2 Toggle = только ручное управление. Для автоматического включения по температуре нужен термодатчик и схема управления. Решение: добавить отдельный термореле параллельно CH2, или оставить только ручное управление.
-2. **Сигнал STA на ЭБУ** — уточнить, брать сигнал от CH5 (до реле) или от силового выхода реле (после реле). Если от CH5 — ЭБУ «видит» команду стартера даже при неисправном реле (ложный сигнал). Если от выхода реле — сигнал достоверен, но требует дополнительного провода от реле.
-3. **Длины трасс** — указаны приблизительно. Требуется обмер после определения точного расположения компонентов и маршрутов прокладки.
-4. **Мощность вентилятора** — уточнить модель и реальный потребляемый ток для проверки сечения 2.5 мм². Если ток выше 20A, может потребоваться 4 мм².
+### Starter Relay (CH5)
+
+MICT CH5 (10A, Momentary) supplies +12V to the coil of the external starter relay — this is a **low-current control circuit** (relay coil ~0.15A, gauge 0.75 mm²). The starter relay switches the high-current 50 mm² from main bus+ to the starter.
+
+**Wiring diagram:**
+
+```
+Main bus+ ──── 50 mm² ──── Starter relay (power contacts) ──── 50 mm² ──── Starter
+                                      │
+                                 Relay coil
+                                  │        │
+                           CH5 (+12V)    GND (G08)
+                          (Momentary)
+```
+
+1. Starter button held → CH5 supplies +12V (Momentary) to relay coil
+2. Relay closes power contacts → 50 mm² from bus+ to starter
+3. Starter cranks
+4. Button released → CH5 turns off → relay opens → starter stops
+
+STA signal to ECU — from CH5 or from the relay power output — so the ECU knows the starter is engaged (see [[04-ecu-wiring]] and open question #2).
+
+### Alternator (Charge Cable)
+
+Power cable 6-10 mm² from main bus+ to alternator B/S terminal — this is the **charge cable** (80A). Alternator is stock 1UZ, 80-100A. Cable connects via ring terminal, bypassing MICTUNING and connector X100.
+
+L signal (charge warning lamp) from the alternator — in stock Toyota wiring. No separate circuit needed in this project.
+
+### Engine ECU (CH1 + BATT + STA)
+
+ECU power circuits (IGN, BATT, STA) physically pass through the front harness but are described in [[04-ecu-wiring]].
+
+### Front Parking Lights (CH10)
+
+Two front parking lights powered in parallel from MICT CH10 (15A, Toggle). This is the same circuit that feeds the rear parking lights via the rear harness (X200). Front parking lights go through the front harness (P07, P08), rear ones through the rear harness. Both pairs are powered from the same CH10 channel.
+
+**Current per parking light:** <1A (5W bulb). Gauge 0.75 mm².
+
+### Front Turn Signals (CH11/CH12)
+
+Left front turn signal powered from CH11 (Flash), right front from CH12 (Flash). Rear turn signals on the same side go through the rear harness. Each MICT channel (CH11/CH12) powers front + rear turn signal on one side.
+
+**Current per turn signal:** ~1.7A (21W bulb). Gauge 0.75 mm².
+
+## Engine Bay Ground Points
+
+Engine bay ground points are body points where short GND wires (200-400 mm) from the mating side of connector X100 arrive. Each body ground point connects **via a separate wire directly to the common point** (battery- / body) — star topology, no daisy chain.
+
+1. **Ground point — left side (closest to headlight/parking/turn signal)** — connects:
+   - GND headlight left (G01, Pin 9)
+   - GND parking left (G04, Pin 12)
+   - GND turn signal left (G06, Pin 14)
+
+2. **Ground point — right side (closest to headlight/parking/turn signal)** — connects:
+   - GND headlight right (G02, Pin 10)
+   - GND parking right (G05, Pin 13)
+   - GND turn signal right (G07, Pin 15)
+
+3. **Ground point — fan** — connects:
+   - GND fan (G03, Pin 11)
+
+4. **Ground point — starter relay** — connects:
+   - GND starter relay coil (G08, Pin 16)
+
+5. **Engine ground** — heavy wire from engine block to common ground point (star). Alternator and starter grounds connect here directly, not through connector X100.
+
+6. **Ground topology — star:** Each body ground point connects **via a separate wire directly to the common point** (battery- / body), not in series (daisy chain). This eliminates floating grounds.
+
+## Wire Gauge Justification
+
+| Consumer | Current (A) | Gauge (mm²) | Justification |
+|----------|-------------|--------------|---------------|
+| Low beam (each headlight) | ~5 | 1.5 | Halogen H4/H7 55W, standard gauge |
+| Cooling fan | 15-20 | 2.5 | Single fan, direct PDM power (CH2, 30A) |
+| Starter relay control (coil) | ~0.15 | 0.75 | Low-current circuit, relay coil current |
+| Front parking lights (each) | <1 | 0.75 | 5W bulbs |
+| Front turn signals (each) | ~1.7 | 0.75 | 21W bulbs |
+| Starter power cable | 200-400 (cranking) | 50 | Cranking current, long run |
+| Alternator charge cable | up to 80 | 6-10 | 1UZ alternator rated current |
+| Fan GND (G03) | 15-20 | 2.5 | Matches power circuit |
+| Headlight GND (G01, G02) | ~5 | 1.5 | Matches power circuit |
+| Parking GND (G04, G05) | <1 | 0.75 | Matches power circuit |
+| Turn signal GND (G06, G07) | ~1.7 | 0.75 | Matches power circuit |
+| Starter relay coil GND (G08) | ~0.15 | 0.75 | Matches power circuit |
+
+## Responsibility Boundary with Rear Harness
+
+| Circuit | Front Harness (X100) | Rear Harness (X200) |
+|---------|----------------------|---------------------|
+| Low beam (CH4) | Both headlights | — |
+| Parking lights (CH10) | Front parking | Rear parking |
+| Left turn signal (CH11) | Front left | Rear left |
+| Right turn signal (CH12) | Front right | Rear right |
+| Fan (CH2) | 1 unit, engine bay | — |
+| Starter relay (CH5) | Relay + power cable | — |
+| Alternator | Charge cable | — |
+| Stop lights (Stop Pedal) | — | Rear stop lights (L+R separate, via splice s-6) |
+| Fuel pump (CH3) | — | Fuel pump |
+
+Both harnesses receive power from the central panel. Channels CH10/CH11/CH12 split at the panel: one branch goes to the front harness, the other to the rear.
+
+## Open Questions
+
+1. **Automatic fan control** — CH2 Toggle = manual control only. For automatic temperature-based operation, a thermo-switch and control circuit are needed. Decision: add a separate thermo-relay in parallel with CH2, or keep manual control only.
+2. **STA signal to ECU** — confirm whether to take the signal from CH5 (before relay) or from the relay power output (after relay). From CH5 — ECU "sees" the starter command even if the relay fails (false signal). From relay output — signal is reliable but requires an extra wire from the relay.
+3. **Route lengths** — shown as approximate. Requires measurement after final component placement and routing is determined.
+4. **Fan power rating** — confirm model and actual current draw to verify 2.5 mm² gauge. If current exceeds 20A, 4 mm² may be needed.

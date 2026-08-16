@@ -1,115 +1,115 @@
-# Задняя коса (Rear Harness)
+# Rear Harness
 
-## 1. Назначение и маршрут прокладки
+## 1. Purpose and Routing
 
-Задняя коса обеспечивает питание задних фонарей (габариты, поворотники, стоп-сигналы) и топливного насоса. Выходит из центральной панели по левому порогу в багажник к фонарям и бензонасосу. Прокладка — вдоль левого порога и днища до задних секций кузова.
+The rear harness supplies power to the tail lights (parking, turn signals, stop lights) and the fuel pump. It exits the central panel along the left sill to the trunk, reaching the tail light assemblies and fuel pump. Routing — along the left sill and floor pan to the rear body sections.
 
-**Концепция локальной массы:** от MICTUNING в косу идут только +12V провода. Минусовые провода не тянутся через жгут обратно к панели. В разъёме X200 помимо + пинов заведены выделенные GND-пины — по одному на каждого потребителя. В ответной части разъёма каждый GND-пин соединяется коротким проводом (200–400 мм) с ближайшей точкой массы на кузове в багажнике. Точки массы на кузове объединены по звёздной топологии.
+**Local Ground concept:** from MICTUNING to the harness, only +12V wires run. Ground wires are not routed through the harness back to the panel. Connector X200 has dedicated GND pins — one per consumer. On the mating side of the connector, each GND pin connects with a short wire (200–400 mm) to the nearest body ground point in the trunk. Body ground points are tied together in a star topology.
 
 ```mermaid
 flowchart LR
-    Panel --> RearHarness[Разъём X200\nзадняя коса]
-    RearHarness -->|+12V| LeftTail(Левый задний габарит)
-    RearHarness -->|+12V| RightTail(Правый задний габарит)
-    RearHarness -->|+12V| LeftTurn(Левый задний поворотник)
-    RearHarness -->|+12V| RightTurn(Правый задний поворотник)
-    RearHarness -->|+12V| LeftStop(Левый стоп-сигнал)
-    RearHarness -->|+12V| RightStop(Правый стоп-сигнал)
-    RearHarness -->|+12V| FuelPump(Топливный насос)
+    Panel --> RearHarness[Connector X200\nrear harness]
+    RearHarness -->|+12V| LeftTail(Left rear parking)
+    RearHarness -->|+12V| RightTail(Right rear parking)
+    RearHarness -->|+12V| LeftTurn(Left rear turn signal)
+    RearHarness -->|+12V| RightTurn(Right rear turn signal)
+    RearHarness -->|+12V| LeftStop(Left stop light)
+    RearHarness -->|+12V| RightStop(Right stop light)
+    RearHarness -->|+12V| FuelPump(Fuel pump)
 
-    RearHarness -->|GND пины| X200Mating[Ответная часть X200]
-    X200Mating -->|короткие провода| StarGround[Звёздная масса\nкузов багажника]
+    RearHarness -->|GND pins| X200Mating[X200 mating side]
+    X200Mating -->|short wires| StarGround[Star ground\ntrunk body]
 ```
 
-## 2. Разъём X200 — распиновка
+## 2. Connector X200 — Pinout
 
-Разъём X200 — 16-пиновый. Содержит 7 силовых (+12V) и 7 индивидуальных GND-пинов, по одному на каждого потребителя. GND-пины замыкаются на кузов в ответной части разъёма короткими проводами к ближайшим точкам массы.
+Connector X200 is 16-pin. It contains 7 power (+12V) and 7 individual GND pins, one per consumer. GND pins are grounded to the body on the mating side of the connector via short wires to the nearest ground points.
 
-| Pin | Сигнал | Куда идёт | Сечение (мм²) | Примечание |
-|-----|--------|-----------|----------------|------------|
-| 1 | +12 В (MICT CH10) | Левый задний габарит (+) | 0.75 | |
-| 2 | +12 В (MICT CH10) | Правый задний габарит (+) | 0.75 | |
-| 3 | +12 В (MICT CH11) | Левый задний поворотник (+) | 0.75 | Flash |
-| 4 | +12 В (MICT CH12) | Правый задний поворотник (+) | 0.75 | Flash |
-| 5 | +12 В (Stop Pedal → s-6) | Левый стоп-сигнал (+) | 1.0 | От Stop Pedal через splice s-6 |
-| 6 | +12 В (Stop Pedal → s-6) | Правый стоп-сигнал (+) | 1.0 | От Stop Pedal через splice s-6 |
-| 7 | +12 В (MICT CH3) | Топливный насос (+) | 2.5 | Прямое питание от PDM |
-| 8 | GND габарит левый | → точка массы кузова | 0.75 | Левый габарит |
-| 9 | GND габарит правый | → точка массы кузова | 0.75 | Правый габарит |
-| 10 | GND поворот. левый | → точка массы кузова | 0.75 | Левый поворотник |
-| 11 | GND поворот. правый | → точка массы кузова | 0.75 | Правый поворотник |
-| 12 | GND стоп левый | → точка массы кузова | 1.0 | Левый стоп-сигнал |
-| 13 | GND стоп правый | → точка массы кузова | 1.0 | Правый стоп-сигнал |
-| 14 | GND бензонасос | → точка массы кузова | 2.5 | Топливный насос |
-| 15 | NC | – | – | Резерв |
-| 16 | NC | – | – | Резерв |
+| Pin | Signal | Destination | Gauge (mm²) | Note |
+|-----|--------|-------------|-------------|------|
+| 1 | +12V (MICT CH10) | Left rear parking (+) | 0.75 | |
+| 2 | +12V (MICT CH10) | Right rear parking (+) | 0.75 | |
+| 3 | +12V (MICT CH11) | Left rear turn signal (+) | 0.75 | Flash |
+| 4 | +12V (MICT CH12) | Right rear turn signal (+) | 0.75 | Flash |
+| 5 | +12V (Stop Pedal → s-6) | Left stop light (+) | 1.0 | From Stop Pedal via splice s-6 |
+| 6 | +12V (Stop Pedal → s-6) | Right stop light (+) | 1.0 | From Stop Pedal via splice s-6 |
+| 7 | +12V (MICT CH3) | Fuel pump (+) | 2.5 | Direct power from PDM |
+| 8 | GND parking left | → body ground point | 0.75 | Left parking |
+| 9 | GND parking right | → body ground point | 0.75 | Right parking |
+| 10 | GND turn left | → body ground point | 0.75 | Left turn signal |
+| 11 | GND turn right | → body ground point | 0.75 | Right turn signal |
+| 12 | GND stop left | → body ground point | 1.0 | Left stop light |
+| 13 | GND stop right | → body ground point | 1.0 | Right stop light |
+| 14 | GND fuel pump | → body ground point | 2.5 | Fuel pump |
+| 15 | NC | – | – | Reserve |
+| 16 | NC | – | – | Reserve |
 
-**Принцип:** каждый потребитель (левый/правый) получает отдельный +12V провод и отдельный GND-пин — как в передней косе (X100). Сечение GND-пина равно сечению соответствующего + провода того же потребителя.
+**Principle:** each consumer (left/right) gets a separate +12V wire and a separate GND pin — as in the front harness (X100). GND pin gauge equals the gauge of the corresponding + wire for the same consumer.
 
-## 3. Таблица цепей задней косы
+## 3. Rear Harness Circuit Table
 
-### Цепи питания
+### Power Circuits
 
-| ID | Откуда | Куда | Длина (мм) | Сечение (мм²) | Цвет | Пред. | Канал MICT | Примечание |
-|----|--------|------|------------|----------------|------|-------|------------|------------|
-| P13 | Panel CH10 (PARK) | Левый задний габарит (+) | ≈ неуточн. | 0.75 | белый | 15A | CH10 | Габарит левый задний |
-| P14 | Panel CH10 (PARK) | Правый задний габарит (+) | ≈ неуточн. | 0.75 | голуб. | 15A | CH10 | Габарит правый задний |
-| P15 | Panel CH11 (L TURN) | Левый задний поворотник (+) | ≈ неуточн. | 0.75 | жёлтый | 10A | CH11 | Поворотник левый (Flash) |
-| P16 | Panel CH12 (R TURN) | Правый задний поворотник (+) | ≈ неуточн. | 0.75 | зелёный | 10A | CH12 | Поворотник правый (Flash) |
-| P17 | Stop Pedal.Out → splice s-6 | Левый стоп-сигнал (+) | ≈ неуточн. | 1.0 | фиолет. | — | — | От Stop Pedal через splice s-6 |
-| P17a | Stop Pedal.Out → splice s-6 | Правый стоп-сигнал (+) | ≈ неуточн. | 1.0 | фиолет. | — | — | От Stop Pedal через splice s-6 |
-| P18 | Panel CH3 (FUEL) | Бензонасос (+) | ≈ неуточн. | 2.5 | красн. | 20A | CH3 | Прямое питание от PDM |
+| ID | From | To | Length (mm) | Gauge (mm²) | Color | Fuse | MICT Channel | Note |
+|----|------|----|-------------|-------------|-------|------|-------------|------|
+| P13 | Panel CH10 (PARK) | Left rear parking (+) | ≈ TBD | 0.75 | White | 15A | CH10 | Left rear parking |
+| P14 | Panel CH10 (PARK) | Right rear parking (+) | ≈ TBD | 0.75 | Light Blue | 15A | CH10 | Right rear parking |
+| P15 | Panel CH11 (L TURN) | Left rear turn signal (+) | ≈ TBD | 0.75 | Yellow | 10A | CH11 | Left turn (Flash) |
+| P16 | Panel CH12 (R TURN) | Right rear turn signal (+) | ≈ TBD | 0.75 | Green | 10A | CH12 | Right turn (Flash) |
+| P17 | Stop Pedal.Out → splice s-6 | Left stop light (+) | ≈ TBD | 1.0 | Violet | — | — | From Stop Pedal via splice s-6 |
+| P17a | Stop Pedal.Out → splice s-6 | Right stop light (+) | ≈ TBD | 1.0 | Violet | — | — | From Stop Pedal via splice s-6 |
+| P18 | Panel CH3 (FUEL) | Fuel pump (+) | ≈ TBD | 2.5 | Red | 20A | CH3 | Direct power from PDM |
 
-### Цепи массы
+### Ground Circuits
 
-Массовые провода не проходят через заднюю косу. В разъёме X200 выделены индивидуальные GND-пины — по одному на каждого потребителя (левый/правый отдельно). В ответной части разъёма каждый GND-пин соединяется коротким проводом с ближайшей точкой массы на кузове в багажнике. Точки массы на кузове объединены по звёздной топологии.
+Ground wires do not run through the rear harness. Connector X200 has dedicated GND pins — one per consumer (left/right separate). On the mating side of the connector, each GND pin connects with a short wire to the nearest body ground point in the trunk. Body ground points are tied together in a star topology.
 
-| ID | Откуда | Куда | Длина (мм) | Сечение (мм²) | Цвет | Примечание |
-|----|--------|------|------------|----------------|------|------------|
-| P23 | X200 pin 8 (GND габарит L) | Точка массы кузова | ≈ 200–400 | 0.75 | чёрн. | Левый габарит |
-| P23a | X200 pin 9 (GND габарит R) | Точка массы кузова | ≈ 200–400 | 0.75 | чёрн. | Правый габарит |
-| P24 | X200 pin 10 (GND поворот. L) | Точка массы кузова | ≈ 200–400 | 0.75 | чёрн. | Левый поворотник |
-| P25 | X200 pin 11 (GND поворот. R) | Точка массы кузова | ≈ 200–400 | 0.75 | чёрн. | Правый поворотник |
-| P26 | X200 pin 12 (GND стоп L) | Точка массы кузова | ≈ 200–400 | 1.0 | чёрн. | Левый стоп-сигнал |
-| P26a | X200 pin 13 (GND стоп R) | Точка массы кузова | ≈ 200–400 | 1.0 | чёрн. | Правый стоп-сигнал |
-| P27 | X200 pin 14 (GND бензонасос) | Точка массы кузова | ≈ 200–400 | 2.5 | чёрн. | Топливный насос |
+| ID | From | To | Length (mm) | Gauge (mm²) | Color | Note |
+|----|------|----|-------------|-------------|-------|------|
+| P23 | X200 pin 8 (GND parking L) | Body ground point | ≈ 200–400 | 0.75 | Black | Left parking |
+| P23a | X200 pin 9 (GND parking R) | Body ground point | ≈ 200–400 | 0.75 | Black | Right parking |
+| P24 | X200 pin 10 (GND turn L) | Body ground point | ≈ 200–400 | 0.75 | Black | Left turn signal |
+| P25 | X200 pin 11 (GND turn R) | Body ground point | ≈ 200–400 | 0.75 | Black | Right turn signal |
+| P26 | X200 pin 12 (GND stop L) | Body ground point | ≈ 200–400 | 1.0 | Black | Left stop light |
+| P26a | X200 pin 13 (GND stop R) | Body ground point | ≈ 200–400 | 1.0 | Black | Right stop light |
+| P27 | X200 pin 14 (GND fuel pump) | Body ground point | ≈ 200–400 | 2.5 | Black | Fuel pump |
 
-## 4. Описание подключений
+## 4. Connection Descriptions
 
-### Задние габаритные огни
+### Rear Parking Lights
 
-Задние габариты (P13–P14) питаются параллельно от канала CH10 MICT (габариты перед + зад). Передние габариты идут через переднюю косу (разъём X100), задние — через заднюю косу (X200). Обе пары запитаны от одного канала CH10.
+Rear parking lights (P13–P14) are powered in parallel from MICT channel CH10 (front + rear parking). Front parking lights run through the front harness (connector X100), rear parking lights through the rear harness (X200). Both pairs are fed from the same channel CH10.
 
-### Поворотники
+### Turn Signals
 
-Левый задний (P15, CH11) и правый задний (P16, CH12) поворотники запитаны раздельно через соответствующие каналы MICT в режиме Flash. Передние поворотники той же стороны идут через переднюю косу (X100), задние — через заднюю (X200). Каждый канал MICT (CH11/CH12) питает передний + задний поворотник одной стороны.
+Left rear (P15, CH11) and right rear (P16, CH12) turn signals are powered separately through the corresponding MICT channels in Flash mode. Front turn signals on the same side run through the front harness (X100), rear turn signals through the rear harness (X200). Each MICT channel (CH11/CH12) drives the front + rear turn signal on one side.
 
-### Стоп-сигналы
+### Stop Lights
 
-Стоп-сигналы (P17 + P17a) получают питание от выключателя стоп-сигнала (Stop Pedal, C4), который запитан напрямую от главной шины + (постоянное +12V). При нажатии педали +12V проходит через выключатель → splice s-6 → X200.5 (левый стоп) и X200.6 (правый стоп). Каждый стоп-сигнал — отдельный провод от splice s-6. Стоп-сигналы работают независимо от зажигания (безопасность). CH6 MICT — свободный резервный канал.
+Stop lights (P17 + P17a) receive power from the stop pedal switch (Stop Pedal, C4), which is powered directly from the main bus+ (constant +12V). When the pedal is pressed, +12V passes through the switch → splice s-6 → X200.5 (left stop) and X200.6 (right stop). Each stop light has a separate wire from splice s-6. Stop lights work regardless of ignition state (safety). CH6 is a free reserve channel.
 
-### Топливный насос
+### Fuel Pump
 
-Питание насоса (P18) подаётся напрямую от канала CH3 MICT (20A, Toggle). MICTUNING — это PDM, каждый канал подаёт силовое питание напрямую на нагрузку. Никаких внешних реле для бензонасоса не требуется: CH3 обеспечивает до 20A, что покрывает потребление усиленного aftermarket насоса (~10–15A).
+Pump power (P18) is supplied directly from MICT channel CH3 (20A, Toggle). MICTUNING is a PDM — each channel delivers power directly to the load. No external relay is needed for the fuel pump: CH3 provides up to 20A, which covers the draw of an upgraded aftermarket pump (~10–15A).
 
-## 5. Сечения проводов и обоснование
+## 5. Wire Gauges and Rationale
 
-| Потребитель | Сечение (мм²) | Обоснование |
-|-------------|----------------|-------------|
-| Задние габариты | 0.75 | Лампы 5W, ток < 1A |
-| Задние поворотники | 0.75 | Лампы 21W, ток ~1.7A |
-| Стоп-сигналы (каждый) | 1.0 | Лампа 21W, ток ~1.7A, запас по длине |
-| Бензонасос | 2.5 | До 15A (aftermarket насос), длина трассы до багажника |
-| GND-пины (каждый) | = сечение + провода | Сечение GND = сечение соответствующего + провода того же потребителя |
+| Consumer | Gauge (mm²) | Rationale |
+|----------|-------------|-----------|
+| Rear parking lights | 0.75 | 5W bulbs, current < 1A |
+| Rear turn signals | 0.75 | 21W bulbs, current ~1.7A |
+| Stop lights (each) | 1.0 | 21W bulb, current ~1.7A, margin for run length |
+| Fuel pump | 2.5 | Up to 15A (aftermarket pump), long run to trunk |
+| GND pins (each) | = + wire gauge | GND gauge = gauge of the corresponding + wire for the same consumer |
 
-## 6. Границы ответственности с передней косой
+## 6. Boundary with Front Harness
 
-| Цепь | Передняя коса (X100) | Задняя коса (X200) |
-|------|----------------------|---------------------|
-| Габариты (CH10) | Передние габариты | Задние габариты |
-| Левый поворотник (CH11) | Передний левый | Задний левый |
-| Правый поворотник (CH12) | Передний правый | Задний правый |
-| Стоп-сигналы (Stop Pedal) | — | Задние стоп-сигналы (L+R раздельно, через splice s-6) |
-| Бензонасос (CH3) | — | Топливный насос |
+| Circuit | Front Harness (X100) | Rear Harness (X200) |
+|---------|----------------------|---------------------|
+| Parking (CH10) | Front parking lights | Rear parking lights |
+| Left turn signal (CH11) | Front left | Rear left |
+| Right turn signal (CH12) | Front right | Rear right |
+| Stop lights (Stop Pedal) | — | Rear stop lights (L+R separate, via splice s-6) |
+| Fuel pump (CH3) | — | Fuel pump |
 
-Оба жгута получают питание от центральной панели. Каналы CH10/CH11/CH12 разветвляются на панели: одна ветвь уходит в переднюю косу, другая — в заднюю.
+Both harnesses receive power from the central panel. Channels CH10/CH11/CH12 split at the panel: one branch goes to the front harness, the other to the rear.

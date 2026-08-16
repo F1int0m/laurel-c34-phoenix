@@ -1,2 +1,2 @@
 # laurel-c34-phoenix
-Проект с информацией о моем гоночном корче и чем-то вокруг него
+Project with information about my race car build and related stuff

@@ -1,199 +1,199 @@
-# Центральный распределительный блок (MICTUNING PDM)
+# Central Distribution Unit (MICTUNING PDM)
 
-## 1. Общая архитектура системы
+## 1. System Architecture Overview
 
-Система построена на базе MICTUNING P1B — PDM (Power Distribution Module), который заменяет традиционный блок предохранителей и реле. Каждый канал PDM имеет собственный предохранитель и способен подавать силовое питание напрямую на нагрузку. Внешние реле применяются только для стартера (слаботочное управление).
+The system is built around the MICTUNING P1B — a PDM (Power Distribution Module) that replaces the traditional fuse and relay box. Each PDM channel has its own fuse and can deliver power directly to the load. External relays are used only for the starter (low-current control).
 
-### Силовая топология
+### Power Topology
 
 ```
-АКБ (багажник)
+Battery (trunk)
     │
-    │ 50 мм² (+)
+    │ 50 mm² (+)
     │
-  Kill switch (плюсовая линия)
+  Kill switch (positive line)
     │
-    │ 50 мм² (+)
+    │ 50 mm² (+)
     │
-  Главная шина + (салон)
+  Main bus+ (cabin)
     │
-    ├──→ MICTUNING PDM (80A кабель) ──→ 12 каналов ──→ Потребители
+    ├──→ MICTUNING PDM (80A cable) ──→ 12 channels ──→ Loads
     │
-    ├──→ Генератор (80A кабель, зарядный)
+    ├──→ Alternator (80A cable, charge)
     │
-    └──→ Реле стартера ──→ 50 мм² ──→ Стартер
+    └──→ Starter relay ──→ 50 mm² ──→ Starter
 
-  BATT ЭБУ: от шины + через отдельный предохранитель 10A (не через MICT)
+  ECU BATT: from bus+ via separate 10A fuse (not through MICT)
 
-  MICTUNING: масса через корпус (крепление к металлу кузова)
+  MICTUNING: ground through housing (metal body mount)
 
-  Массовые шины: двигатель, салон, багажник — каждая напрямую к общей точке (звезда)
+  Ground buses: engine, cabin, trunk — each directly to common point (star)
 ```
 
-### Принцип: MICTUNING как PDM
+### Principle: MICTUNING as PDM
 
-MICTUNING — это **Power Distribution Module**, а не просто панель переключателей. Каждый канал:
+MICTUNING is a **Power Distribution Module**, not just a switch panel. Each channel:
 
-- Имеет **собственный предохранитель** (защита цепи встроена в канал)
-- Может **подавать силовое питание напрямую на нагрузку** (до номинала предохранителя канала)
-- Не требует внешних реле для нагрузок до 30A
+- Has its **own fuse** (circuit protection is built into the channel)
+- Can **deliver power directly to the load** (up to the channel fuse rating)
+- Does not require external relays for loads up to 30A
 
-Внешние реле нужны только если:
-- Нагрузка превышает предохранитель канала
-- Требуется гальваническая развязка (стартер — слаботочное управление реле)
+External relays are only needed when:
+- Load exceeds the channel fuse rating
+- Galvanic isolation is required (starter — low-current relay control)
 
-## 2. MICTUNING P1B — характеристики
+## 2. MICTUNING P1B — Specifications
 
-- **Модель:** 12 gang (80A общий ток, 960W при 12V)
-- **Напряжение:** 12V DC
-- **Защита:** IP65
-- **Питание:** напрямую от главной шины + (кабель 80A)
-- **Масса:** через корпус (крепление к металлу кузова)
-- **4 режима управления:**
-  - Red — Toggle (вкл/выкл, постоянное питание)
-  - Green — Momentary (пока удерживаешь)
-  - Blue — Flash (прерывистый, для поворотников)
-  - Cyan — Pulsed Strobe (для аварийки)
+- **Model:** 12 gang (80A total current, 960W at 12V)
+- **Voltage:** 12V DC
+- **Protection:** IP65
+- **Power:** direct from main bus+ (80A cable)
+- **Ground:** through housing (metal body mount)
+- **4 control modes:**
+  - Red — Toggle (on/off, constant power)
+  - Green — Momentary (held)
+  - Blue — Flash (intermittent, for turn signals)
+  - Cyan — Pulsed Strobe (for hazard lights)
 
-## 3. Каналы и предохранители — утверждённое распределение
+## 3. Channels and Fuses — Approved Allocation
 
-| CH | Fuse | Назначение | Режим | Примечание |
-|----|------|-----------|-------|------------|
-| 1 | 30A | IGN-шина (ЭБУ +12V) | Toggle | Включает зажигание и BATT ЭБУ |
-| 2 | 30A | Вентилятор охлаждения | Toggle | Прямое питание от PDM |
-| 3 | 20A | Бензонасос | Toggle | Прямое питание от PDM |
-| 4 | 15A | Ближний свет (галоген) | Toggle | Левая + правая фара параллельно |
-| 5 | 10A | Реле стартера | Momentary | Слаботочное упр. катушкой реле |
-| 6 | 10A | Резерв | — | Свободный канал |
-| 7 | 30A | Печка | Toggle | Прямое питание от PDM |
-| 8 | 30A | Резерв | — | Силовой канал |
-| 9 | 20A | Дворники | Toggle | Прямое питание от PDM |
-| 10 | 15A | Габариты (перед + зад) | Toggle | Все габариты параллельно |
-| 11 | 10A | Поворотник левый | Flash | Передний + задний одной стороны |
-| 12 | 10A | Поворотник правый | Flash | Передний + задний одной стороны |
+| CH | Fuse | Function | Mode | Note |
+|----|------|----------|------|------|
+| 1 | 30A | IGN bus (ECU +12V) | Toggle | Powers ignition and ECU BATT |
+| 2 | 30A | Cooling fan | Toggle | Direct power from PDM |
+| 3 | 20A | Fuel pump | Toggle | Direct power from PDM |
+| 4 | 15A | Low beam (halogen) | Toggle | Left + right headlights in parallel |
+| 5 | 10A | Starter relay | Momentary | Low-current relay coil control |
+| 6 | 10A | Reserve | — | Free channel |
+| 7 | 30A | Heater | Toggle | Direct power from PDM |
+| 8 | 30A | Reserve | — | High-current channel |
+| 9 | 20A | Wipers | Toggle | Direct power from PDM |
+| 10 | 15A | Parking lights (front + rear) | Toggle | All parking lights in parallel |
+| 11 | 10A | Left turn signal | Flash | Front + rear on same side |
+| 12 | 10A | Right turn signal | Flash | Front + rear on same side |
 
-### Пояснения к каналам
+### Channel Notes
 
-**CH1 — IGN-шина (ЭБУ):** подаёт +12V на ЭБУ двигателя.
+**CH1 — IGN bus (ECU):** supplies +12V to the engine ECU.
 
-**CH5 — Реле стартера:** режим Momentary — питание подаётся только пока удерживаешь кнопку. CH5 подаёт +12V на катушку внешнего реле стартера, которое коммутирует силовой +50 мм² от главной шины до стартера.
+**CH5 — Starter relay:** Momentary mode — power is supplied only while the button is held. CH5 provides +12V to the coil of the external starter relay, which switches high-current +50 mm² from main bus to starter.
 
-**CH6 — Резерв:** канал свободен. Стоп-сигналы питаются напрямую от главной шины + через выключатель на педали (Stop Pedal, C4), не через MICTUNING.
+**CH6 — Reserve:** channel is free. Stop lights are powered directly from main bus+ through the pedal switch (Stop Pedal, C4), not through MICTUNING.
 
-**CH11/CH12 — Поворотники:** режим Flash формирует прерывистый сигнал. На каждый канал — передний + задний поворотник одной стороны.
+**CH11/CH12 — Turn signals:** Flash mode generates the intermittent signal. Each channel drives front + rear turn signals on one side.
 
-## 4. Силовые цепи: АКБ, kill switch, шины
+## 4. Power Circuits: Battery, Kill Switch, Buses
 
-### АКБ и главная шина +
+### Battery and Main Bus+
 
-АКБ расположена в багажнике. Силовой кабель идёт через kill switch на плюсовой линии к главной шине + в салоне.
+The battery is trunk-mounted. A power cable runs through a kill switch on the positive line to the main bus+ in the cabin.
 
-| Цепь | Сечение (мм²) | Цвет | Примечание |
-|------|----------------|------|------------|
-| АКБ (+) → Kill switch | 50 | красн. | Плюсовая линия |
-| Kill switch → Главная шина + | 50 | красн. | Плюсовая линия |
-| Главная шина + → MICTUNING | 80A кабель | красн. | Питание PDM |
-| Главная шина + → Генератор | 80A кабель | красн. | Зарядный кабель |
-| Главная шина + → Реле стартера | 50 | красн. | Силовое питание стартера |
-| Реле стартера → Стартер | 50 | красн. | Пусковой ток |
-| Главная шина + → Предохранитель 10A → BATT ЭБУ | 0.75 | красн. | Не через MICT |
+| Circuit | Gauge (mm²) | Color | Note |
+|---------|-------------|-------|------|
+| Battery (+) → Kill switch | 50 | Red | Positive line |
+| Kill switch → Main bus+ | 50 | Red | Positive line |
+| Main bus+ → MICTUNING | 80A cable | Red | PDM power |
+| Main bus+ → Alternator | 80A cable | Red | Charge cable |
+| Main bus+ → Starter relay | 50 | Red | Starter high-current power |
+| Starter relay → Starter | 50 | Red | Cranking current |
+| Main bus+ → 10A fuse → ECU BATT | 0.75 | Red | Not through MICT |
 
-### Kill switch
+### Kill Switch
 
-Установлен на **плюсовой линии** между АКБ и главной шиной +. Размыкает весь +12V системы. Номинал 100–200A.
+Installed on the **positive line** between battery and main bus+. Disconnects all +12V in the system. Rating 100–200A.
 
-### Реле стартера
+### Starter Relay
 
-Единственное внешнее реле в системе. Коммутирует силовой +50 мм² от главной шины к стартеру. Катушка реле управляется слаботочным сигналом от CH5 MICTUNING (Momentary).
+The only external relay in the system. Switches high-current +50 mm² from main bus to starter. Relay coil is driven by a low-current signal from MICTUNING CH5 (Momentary).
 
-## 5. Массовая схема — звезда
+## 5. Ground Scheme — Star Topology
 
-Принята схема с распределёнными массовыми шинами, каждая из которых подключена **напрямую к общей точке (звезда)**, а не последовательно (daisy chain). Это устраняет проблему «плавающих» масс и облегчает диагностику.
+The design uses distributed ground buses, each connected **directly to a common point (star)** rather than in series (daisy chain). This eliminates floating ground issues and simplifies diagnostics.
 
-### Массовые шины
+### Ground Buses
 
-- **Двигатель** — массы двигателя, генератора, вентилятора, стартера. Толстый провод от точки двигателя к общей точке.
-- **Салон** — массы MICTUNING (через корпус), печки, дворников, OBD, ЭБУ BATT.
-- **Багажник** — массы бензонасоса, задних фонарей.
+- **Engine** — grounds for engine, alternator, fan, starter. Heavy wire from engine point to common point.
+- **Cabin** — grounds for MICTUNING (through housing), heater, wipers, OBD, ECU BATT.
+- **Trunk** — grounds for fuel pump, tail lights.
 
-Каждая шина — отдельный провод напрямую к общей точке (кузов/АКБ−). Никаких последовательных соединений между шинами.
+Each bus is a separate wire directly to the common point (body/battery−). No daisy-chaining between buses.
 
-### MICTUNING: масса через корпус
+### MICTUNING: Ground Through Housing
 
-MICTUNING получает массу через крепление к металлу кузова. Дополнительный массовый провод не требуется.
+MICTUNING grounds through its metal body mount. No additional ground wire is required.
 
-## 6. Питание MICTUNING и OBD
+## 6. MICTUNING Power Supply and OBD
 
-| Цепь | Сечение (мм²) | Цвет | Примечание |
-|------|----------------|------|------------|
-| Главная шина + → MICTUNING | 80A кабель | красн. | Питание PDM |
-| MICTUNING масса | — | — | Через корпус (крепление к кузову) |
-| Главная шина + → Предохранитель 5A → OBD-II | 0.75 | жёлт. | Питание диагностического разъёма (от IGN-шины CH1) |
-| Общая точка массы → OBD-II | 0.75 | чёрн. | Земля OBD |
-| Главная шина + → Предохранитель 10A → BATT ЭБУ | 0.75 | красн. | Постоянное питание ЭБУ (не через MICT) |
+| Circuit | Gauge (mm²) | Color | Note |
+|---------|-------------|-------|------|
+| Main bus+ → MICTUNING | 80A cable | Red | PDM power |
+| MICTUNING ground | — | — | Through housing (body mount) |
+| Main bus+ → 5A fuse → OBD-II | 0.75 | Yellow | Diagnostic port power (from IGN bus CH1) |
+| Common ground point → OBD-II | 0.75 | Black | OBD ground |
+| Main bus+ → 10A fuse → ECU BATT | 0.75 | Red | Constant ECU power (not through MICT) |
 
-## 7. BOM — спецификация материалов (центральная панель)
+## 7. BOM — Bill of Materials (Central Panel)
 
-| # | Наименование | Размер/тип | Кол-во | Примечание |
-|---|---|---|---|---|
-| 1 | MICTUNING P1B 12-gang PDM | 80A, IP65 | 1 шт | Центральный PDM |
-| 2 | Реле стартера (30A контакты) | 4-контактное | 1 шт | Слаботочное управление от CH5 |
-| 3 | Kill switch | 100–200A | 1 шт | На плюсовой линии |
-| 4 | Предохранитель главный (F_MAIN) | 150–200A, ANL | 1 шт | На линии АКБ → шина + |
-| 5 | Держатель предохранителя ANL | MiniANL, 200A | 1 шт | Для F_MAIN |
-| 6 | Предохранитель 10A (BATT ЭБУ) | Mini | 1 шт | Отдельный, не через MICT |
-| 7 | Предохранитель 5A (OBD-II) | Mini | 1 шт | От IGN-шины CH1 |
-| 8 | Провод 50 мм² | красн. | 5 м | АКБ→Kill switch→шина+, реле→стартер |
-| 9 | Провод 50 мм² | чёрн. | 2 м | АКБ− → общая точка массы |
-| 10 | Провод 80A (кабель) | красн. | 3 м | Шина+→MICTUNING, шина+→генератор |
-| 11 | Провод 2.5 мм² | красн./чёрн. | 10 м | Печка, вентилятор, бензонасос (от MICT) |
-| 12 | Провод 1.5 мм² | красн. | 10 м | Ближний свет (от MICT) |
-| 13 | Провод 1.0 мм² | красн. | 5 м | Стоп-сигналы (от Stop Pedal до splice s-6 и X200) |
-| 14 | Провод 1.5 мм² | красн./чёрн. | 5 м | Дворники (от MICT) |
-| 15 | Провод 0.75 мм² | красн. | 20 м | Габариты, поворотники, IGN ЭБУ, STA, OBD |
-| 16 | Провод 0.75 мм² | чёрн. | 15 м | Массовые провода слаботочных потребителей |
-| 17 | Провод 0.75 мм² | жёлт. | 3 м | OBD-II питание |
-| 18 | Провод 0.75 мм² | чёрн. | 3 м | OBD-II масса |
-| 19 | Медные шины (винтовые клеммы) | + и − | 2 шт | Главная шина +, общая точка массы |
-| 20 | Массовые шины (локальные) | 6–8 мм | 3 шт | Двигатель, салон, багажник |
-| 21 | Клеммы O-образные (на шину) | 6–8 мм | 15 шт | Под винты шин |
-| 22 | Клеммы «лапка» изолированные | 1.5–6 мм | 40 шт | Подсоединение проводов к клеммам |
-| 23 | Контакты (медь, 2.8–6.3 мм) | — | 50 шт | Для разъёмов |
-| 24 | Термоусадка клеевая (2:1 и 3:1) | Ø 1–10 мм | 1 упак. | Герметизация обжимов |
-| 25 | Лента 3M Temflex 1700 | синяя | 1 шт | Изоляция жгутов |
-| 26 | PET-оплетка (расплетка кабельная) | Ø 8–20 мм | 5 м | Защита жгутов |
-| 27 | Хомуты пластиковые | 200×4.6 мм | 50 шт | Фиксация жгутов |
-| 28 | Очиститель контактов (спрей) | — | 1 шт | Против коррозии клемм |
-| 29 | Разъём OBD-II (жен.) | 16-конт. | 1 шт | Диагностический разъём |
+| # | Item | Size/type | Qty | Note |
+|---|------|-----------|-----|------|
+| 1 | MICTUNING P1B 12-gang PDM | 80A, IP65 | 1 | Central PDM |
+| 2 | Starter relay (30A contacts) | 4-pin | 1 | Low-current control from CH5 |
+| 3 | Kill switch | 100–200A | 1 | On positive line |
+| 4 | Main fuse (F_MAIN) | 150–200A, ANL | 1 | On battery → bus+ line |
+| 5 | ANL fuse holder | MiniANL, 200A | 1 | For F_MAIN |
+| 6 | 10A fuse (ECU BATT) | Mini | 1 | Separate, not through MICT |
+| 7 | 5A fuse (OBD-II) | Mini | 1 | From IGN bus CH1 |
+| 8 | 50 mm² wire | Red | 5 m | Battery→Kill switch→bus+, relay→starter |
+| 9 | 50 mm² wire | Black | 2 m | Battery− → common ground point |
+| 10 | 80A cable | Red | 3 m | Bus+→MICTUNING, bus+→alternator |
+| 11 | 2.5 mm² wire | Red/Black | 10 m | Heater, fan, fuel pump (from MICT) |
+| 12 | 1.5 mm² wire | Red | 10 m | Low beam (from MICT) |
+| 13 | 1.0 mm² wire | Red | 5 m | Stop lights (from Stop Pedal to splice s-6 and X200) |
+| 14 | 1.5 mm² wire | Red/Black | 5 m | Wipers (from MICT) |
+| 15 | 0.75 mm² wire | Red | 20 m | Parking lights, turn signals, ECU IGN, STA, OBD |
+| 16 | 0.75 mm² wire | Black | 15 m | Ground wires for low-current loads |
+| 17 | 0.75 mm² wire | Yellow | 3 m | OBD-II power |
+| 18 | 0.75 mm² wire | Black | 3 m | OBD-II ground |
+| 19 | Copper bus bars (screw terminals) | + and − | 2 | Main bus+, common ground point |
+| 20 | Local ground buses | 6–8 mm | 3 | Engine, cabin, trunk |
+| 21 | O-ring terminals (to bus bar) | 6–8 mm | 15 | Under bus bar screws |
+| 22 | Insulated spade terminals | 1.5–6 mm | 40 | Wire-to-terminal connections |
+| 23 | Contacts (copper, 2.8–6.3 mm) | — | 50 | For connectors |
+| 24 | Adhesive heat-shrink tubing (2:1 and 3:1) | Ø 1–10 mm | 1 pack | Crimp sealant |
+| 25 | 3M Temflex 1700 tape | Blue | 1 | Harness insulation |
+| 26 | PET braided sleeve | Ø 8–20 mm | 5 m | Harness protection |
+| 27 | Plastic zip ties | 200×4.6 mm | 50 | Harness fixation |
+| 28 | Contact cleaner spray | — | 1 | Corrosion prevention on terminals |
+| 29 | OBD-II connector (female) | 16-pin | 1 | Diagnostic port |
 
-Количество проводов дано с запасом ~10%. Контакты для разъёмов — в 2–3-кратном запасе.
+Wire lengths include ~10% margin. Connector contacts are in 2–3x reserve.
 
-## 8. Рекомендации по монтажу
+## 8. Assembly Recommendations
 
-### Обжим соединений
+### Crimp Connections
 
-Использовать специальные обжимные клеммы с клеевой термоусадкой и профессиональный кримпер. Паять провода запрещено — такие соединения ненадёжны из-за хрупкости и коррозии при вибрациях. После обжима всегда делать «тяг-тест» — провода не должны выниматься из коннектора. Термоусадка с термоклеем (3:1) надёжно изолирует соединение и защищает от влаги.
+Use crimp terminals with adhesive heat-shrink tubing and a professional crimper. Soldering is prohibited — soldered joints are unreliable due to brittleness and corrosion under vibration. Always tug-test after crimping — wires must not pull out of the connector. Heat-shrink with adhesive (3:1) reliably seals the connection and protects against moisture.
 
-### Маркировка
+### Labeling
 
-Каждую жилу и жгут пронумеровать или подписать ярлыками. Использовать пронумерованную термоусадку или машинописные ленты. Наносить по схеме цепей (ID из таблиц). Критично для отладки.
+Number or label every wire and harness. Use numbered heat-shrink or typewriter tape labels. Label according to the circuit diagram IDs from the tables. Critical for debugging.
 
-### Защита от влаги
+### Moisture Protection
 
-Места ввода кос под капот и в салон — обязательно через резиновые уплотнители. Все разъёмы в подкапотном пространстве — водонепроницаемые (IP67) или дополнительно герметизируются. Провода обёртывать изолентой 3M или использовать полиэфирную оплётку (PET) для защиты от механики.
+Harness entry points into the engine bay and cabin must use rubber grommets. All connectors in the engine bay must be waterproof (IP67) or additionally sealed. Wrap wires with 3M tape or use PET braided sleeve for mechanical protection.
 
-### Крепления
+### Fastening
 
-Жгуты фиксировать пластмассовыми стяжками к жёстким элементам кузова каждые 50–100 мм. Избегать «висящих» участков. Минимальный радиус изгиба — не менее 5–10 диаметров провода.
+Secure harnesses with plastic zip ties to rigid body elements every 50–100 mm. Avoid unsupported spans. Minimum bend radius — no less than 5–10 wire diameters.
 
-### Материалы
+### Materials
 
-Применять провода с изоляцией FLRY или GXL (для подкапотного пространства — с дополнительным фторсиликоновым покрытием). Разъёмы — заводские, герметичные (Deutsch, AMP, Nissan OEM). Все клеммы затягивать с указанным моментом.
+Use wire with FLRY or GXL insulation (for engine bay — with additional fluorosilicone coating). Connectors — factory-sealed (Deutsch, AMP, Nissan OEM). Torque all terminals to specification.
 
-### Массы — критично
+### Grounds — Critical
 
-Каждая локальная массовая шина (двигатель, салон, багажник) подключается **отдельным проводом напрямую к общей точке** (звезда). Последовательное соединение шин (daisy chain) запрещено — приводит к «плавающим» массам и трудно диагностируемым проблемам. MICTUNING получает массу через корпус (крепление к кузову).
+Each local ground bus (engine, cabin, trunk) connects **via a separate wire directly to the common point** (star topology). Daisy-chaining ground buses is prohibited — it causes floating grounds and hard-to-diagnose problems. MICTUNING grounds through its housing (body mount).
 
-### Испытания готового жгута
+### Finished Harness Testing
 
-Перед установкой — проверка на короткое замыкание и соответствие схемы. Заполнить каждый разъём специальным красителем для наглядности и проверки посадки контактов.
+Before installation — verify for short circuits and conformance to the schematic. Fill each connector cavity with inspection paste for visual confirmation of contact seating.

@@ -19,19 +19,19 @@
 
 ## Color Naming Convention
 
-### Russian to English to harness.design PartColor
+### Color Abbreviation to harness.design PartColor
 
-| Russian (abbrev.) | English | harness.design value |
-|--------------------|---------|---------------------|
-| красн. | Red | Red |
-| синий | Blue | Blue |
-| чёрн. | Black | Black |
-| зелён. | Green | Green |
-| бел. | White | White |
-| голуб. | Light Blue | Light Blue |
-| жёлт. | Yellow | Yellow |
-| оранж. | Orange | Orange |
-| фиолет. | Violet | Violet |
+| Abbreviation | English | harness.design value |
+|--------------|---------|---------------------|
+| red | Red | Red |
+| blue | Blue | Blue |
+| blk | Black | Black |
+| grn | Green | Green |
+| wht | White | White |
+| lt blue | Light Blue | Light Blue |
+| yel | Yellow | Yellow |
+| org | Orange | Orange |
+| viol | Violet | Violet |
 
 ### Stripe colors
 

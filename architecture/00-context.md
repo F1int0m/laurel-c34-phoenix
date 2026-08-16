@@ -1,154 +1,154 @@
 ---
 name: wiring-context
-description: Контекст проекта проводки Nissan Laurel C34 + 1UZ VVT-i — компоненты, решения, параметры
+description: Project context for Nissan Laurel C34 + 1UZ VVT-i wiring — components, decisions, parameters
 metadata:
   type: project
 ---
 
-# Контекст проекта проводки Nissan Laurel C34 + 1UZ VVT-i
+# Wiring Project Context — Nissan Laurel C34 + 1UZ VVT-i
 
-## Автомобиль и свап
+## Vehicle and Swap
 
-- **Донор:** Nissan Laurel C34
-- **Двигатель:** Toyota 1UZ VVT-i
-- **КПП:** МКПП
-- **Проводка ЭБУ → мотор:** уже готова (стоковая Toyota ECU), нужно только подать +12V (IGN)
-- **Кондиционер:** удалён
+- **Donor:** Nissan Laurel C34
+- **Engine:** Toyota 1UZ VVT-i
+- **Transmission:** Manual
+- **ECU → engine wiring:** already complete (stock Toyota ECU); only needs +12V IGN supply
+- **A/C:** removed
 
-## АКБ и силовая схема
+## Battery and Power Topology
 
-- **АКБ:** расположена в багажнике
-- **Силовой кабель АКБ → главная шина +:** 50 мм²
-- **Главная шина +:** расположена в салоне
-- **Kill switch:** на плюсовой линии (между АКБ и главной шиной +)
-- **Генератор:** стоковый 1UZ, 80–100A; отдельный силовой кабель (80A) от главной шины + до генератора
-- **Стартер:** силовой кабель 50 мм² от главной шины + до стартера (отдельно от MICTUNING)
-- **Главный предохранитель:** на силовой линии от АКБ
+- **Battery:** trunk-mounted
+- **Battery → main bus+ cable:** 50 mm²
+- **Main bus+:** cabin-mounted
+- **Kill switch:** on positive line (between battery and main bus+)
+- **Alternator:** stock 1UZ, 80–100A; dedicated 80A cable from main bus+ to alternator
+- **Starter:** 50 mm² cable from main bus+ to starter (separate from MICTUNING)
+- **Main fuse:** on power line from battery
 
-## MICTUNING P1B — PDM модуль
+## MICTUNING P1B — PDM Module
 
-### Характеристики
+### Specifications
 
-- **Модель:** 12 gang (80A общий ток, 960W при 12V)
-- **Напряжение:** 12V DC
-- **Защита:** IP65
-- **Питание:** напрямую от АКБ (Battery) — все каналы работают независимо от зажигания
-- **Масса:** через корпус (крепление к металлу кузова)
-- **4 режима управления:**
-  - Red — Toggle (вкл/выкл, постоянное питание)
-  - Green — Momentary (пока удерживаешь)
-  - Blue — Flash (прерывистый, для поворотников)
-  - Cyan — Pulsed Strobe (для аварийки)
+- **Model:** 12 gang (80A total current, 960W at 12V)
+- **Voltage:** 12V DC
+- **Protection:** IP65
+- **Power:** direct from battery — all channels operate independently of ignition
+- **Ground:** through housing (metal body mount)
+- **4 control modes:**
+  - Red — Toggle (on/off, constant power)
+  - Green — Momentary (held)
+  - Blue — Flash (intermittent, for turn signals)
+  - Cyan — Pulsed Strobe (for hazard lights)
 
-### Каналы и предохранители — распределение утверждено
+### Channel and Fuse Allocation — Approved
 
-| Канал | Предохранитель | Назначение | Режим MICT |
-|-------|---------------|------------|------------|
-| CH1 | 30A | IGN-шина (ЭБУ +12V) | Toggle |
-| CH2 | 30A | Вентилятор охлаждения | Toggle |
-| CH3 | 20A | Бензонасос | Toggle |
-| CH4 | 15A | Ближний свет (галоген) | Toggle |
-| CH5 | 10A | Реле стартера (слаботочное упр.) | Momentary |
-| CH6 | 10A | Резерв | — |
-| CH7 | 30A | Печка | Toggle |
-| CH8 | 30A | Резерв (силовой) | — |
-| CH9 | 20A | Дворники | Toggle |
-| CH10 | 15A | Габариты (перед + зад) | Toggle |
-| CH11 | 10A | Поворотник левый | Flash |
-| CH12 | 10A | Поворотник правый | Flash |
+| Channel | Fuse | Function | MICT Mode |
+|---------|------|----------|-----------|
+| CH1 | 30A | IGN bus (ECU +12V) | Toggle |
+| CH2 | 30A | Cooling fan | Toggle |
+| CH3 | 20A | Fuel pump | Toggle |
+| CH4 | 15A | Low beam (halogen) | Toggle |
+| CH5 | 10A | Starter relay (low-current control) | Momentary |
+| CH6 | 10A | Reserve | — |
+| CH7 | 30A | Heater | Toggle |
+| CH8 | 30A | Reserve (high-current) | — |
+| CH9 | 20A | Wipers | Toggle |
+| CH10 | 15A | Parking lights (front + rear) | Toggle |
+| CH11 | 10A | Left turn signal | Flash |
+| CH12 | 10A | Right turn signal | Flash |
 
-**Стоп-сигналы:** выключатель стоп-сигнала (Stop Pedal, C4) запитан напрямую от главной шины + (постоянное +12V, не через MICT). При нажатии педали +12V проходит через выключатель → splice s-6 → X200.5/X200.6 (задние стоп-сигналы). Стоп-сигналы работают независимо от зажигания. CH6 MICT — свободный резервный канал.
+**Stop lights:** stop pedal switch (C4, 2-pin) is powered directly from main bus+ (constant +12V, not through MICT). When the pedal is pressed, +12V passes through the switch → splice s-6 → X200.5/X200.6 (rear stop lights). Stop lights work regardless of ignition state. CH6 is now a free reserve channel.
 
-**Реле стартера (CH5):** режим Momentary — питание подаётся только пока удерживаешь кнопку. CH5 подаёт +12V на катушку внешнего реле стартера, которое коммутирует силовой + от главной шины до стартера.
+**Starter relay (CH5):** Momentary mode — power is supplied only while the button is held. CH5 provides +12V to the coil of the external starter relay, which switches high-current + from main bus to starter.
 
-**Поворотники (CH11/CH12):** режим Flash на MICTUNING формирует прерывистый сигнал. На каждый канал — передний + задний поворотник одной стороны.
+**Turn signals (CH11/CH12):** MICTUNING Flash mode generates the intermittent signal. Each channel drives front + rear turn signals on one side.
 
-### Ключевой принцип
+### Key Principle
 
-MICTUNING — это **PDM (Power Distribution Module)**, а не просто панель переключателей. Каждый канал:
-- Имеет собственный предохранитель
-- Может подавать силовое питание напрямую на нагрузку (до номинала предохранителя канала)
-- Не требует внешних реле для нагрузок до 30A (предохранитель канала защищает цепь)
+MICTUNING is a **PDM (Power Distribution Module)**, not just a switch panel. Each channel:
+- Has its own fuse
+- Can deliver power directly to the load (up to the channel fuse rating)
+- Does not require external relays for loads up to 30A (channel fuse protects the circuit)
 
-Внешние реле нужны только если:
-- Нагрузка превышает предохранитель канала
-- Требуется гальваническая развязка (например, стартер — слаботочное управление реле)
+External relays are only needed when:
+- Load exceeds the channel fuse rating
+- Galvanic isolation is required (e.g., starter — low-current relay control)
 
-### Предохранители как резисторы в harness.design
+### Fuses as Resistors in harness.design
 
-В схеме harness.design **предохранители отображаются как резисторы**. Это визуальная конвенция — физически в косе используются реальные предохранители (канальные предохранители MICTUNING, отдельные предохранители F_MAIN, BATT ЭБУ 10A, OBD 5A и т.д.). Каждый резистор на схеме соответствует предохранителю 1:1. Поле value/description резистора содержит номинал предохранителя (например "10A", "30A").
+In the harness.design schematic, **fuses are represented as resistors**. This is a visual convention — the physical harness uses real fuses (MICTUNING channel fuses, standalone fuses F_MAIN, BATT ECU 10A, OBD 5A, etc.). Each resistor on the schematic corresponds 1:1 to a fuse. The resistor value/description field carries the fuse amperage (e.g. "10A", "30A").
 
-## Нагрузки — что проектируем
+## Loads — What We Design
 
-### Цепи, которые нужно спроектировать
+### Circuits to design
 
-- Фары (галоген, ~10A на пару)
-- Вентилятор охлаждения (1 шт)
-- Бензонасос (усиленный aftermarket, ~10–15A)
-- Реле стартера (слаботочное управление от MICT CH5)
-- Стоп-сигнал (выключатель на педали тормоза, питание от главной шины +, не через MICT)
-- Поворотники (через режим Flash на MICT)
-- Печка (стоковый мотор Laurel, ~15–20A)
-- Дворники (стоковый мотор Laurel, ~5–10A)
-- Сигнал IGN на ЭБУ (+12V после зажигания)
-- OBD-порт (для цифрового даша)
+- Headlights (halogen, ~10A per pair)
+- Cooling fan (1 unit)
+- Fuel pump (upgraded aftermarket, ~10–15A)
+- Starter relay (low-current control from MICT CH5)
+- Stop light (pedal switch, powered from main bus+, not through MICT)
+- Turn signals (via MICT Flash mode)
+- Heater (stock Laurel motor, ~15–20A)
+- Wipers (stock Laurel motor, ~5–10A)
+- ECU IGN signal (+12V after ignition)
+- OBD port (for digital dash)
 
-### Цепи, которые НЕ нужны
+### Circuits NOT needed
 
-- Задний ход — нет
-- Клаксон — нет
-- Салонный свет — нет
-- Кондиционер — удалён
-- Neutral safety switch — нет (МКПП, водитель контролирует)
+- Reverse light — no
+- Horn — no
+- Interior light — no
+- A/C — removed
+- Neutral safety switch — no (manual trans, driver controls)
 
-### Цепи вне проекта (уже готовы)
+### Out-of-scope circuits (already complete)
 
-- ЭБУ → мотор (датчики, форсунки, катушки, MAF, O2 и т.д.) — стоковая проводка Toyota
-- Для ЭБУ нужен только провод +12V IGN
+- ECU → engine (sensors, injectors, coils, MAF, O2, etc.) — stock Toyota wiring
+- ECU only needs a +12V IGN wire
 
-## Управление
+## Control
 
-- **Все управление светом и нагрузками — через MICTUNING** (нет отдельных подрулевых переключателей)
-- **Приборная панель:** цифровой даш через OBD
+- **All light and load control — through MICTUNING** (no separate column stalk switches)
+- **Instrument cluster:** digital dash via OBD
 
-## Архитектура проводки (из существующих файлов)
+## Harness Architecture (from existing files)
 
-Модульная схема с тремя косами:
-- [[01-central-panel]] — центральная панель (MICTUNING, шины + и GND)
-- [[02-rear-harness]] — задняя (задний свет, бензонасос)
-- [[03-cabin-harness]] — салонная (печка, дворники, OBD)
-- [[04-ecu-wiring]] — питание ЭБУ
-- [[05-front-harness]] — передняя (фары, вентилятор, генератор, стартер)
+Modular design with sub-harnesses:
+- [[01-central-panel]] — central panel (MICTUNING, + and GND buses)
+- [[02-rear-harness]] — rear (tail lights, fuel pump)
+- [[03-cabin-harness]] — cabin (heater, wipers, OBD)
+- [[04-ecu-wiring]] — ECU power supply
+- [[05-front-harness]] — front (headlights, fan, alternator, starter)
 
-## Концепция локальной массы (Local Ground at Connector)
+## Local Ground at Connector Concept
 
-**Принцип:** от MICTUNING в каждую косу идут **только +12V провода**. Минусовые провода не тянутся через жгут обратно к центральной панели.
+**Principle:** from MICTUNING to each harness, **only +12V wires** run. Ground wires are not routed through the harness back to the central panel.
 
-На конце каждой косы установлен разъём (X100, X200, X300, X400). В каждом разъёме помимо сигнальных (+) пинов заведены **выделенные пины GND** — по одному на каждого потребителя или группу потребителей. В **ответной части** разъёма эти GND-пины подключаются к **ближайшей точке массы на кузове** коротким проводом.
+Each harness ends with an inline connector (X100, X200, X300, X400). Besides signal (+) pins, each connector has **dedicated GND pins** — one per consumer or consumer group. On the **mating side** of each connector, these GND pins connect to the **nearest body ground point** with short wires.
 
-**X400 (коса ЭБУ)** — питание берётся в одном месте с MICTUNING PDM, т.к. PDM и ЭБУ физически расположены рядом. Это осознанное решение: вместо прокладки проводов от центральной панели, +12V для IGN (CH1) и BATT берутся локально от PDM.
+**X400 (ECU harness)** — power is taken from the same location as MICTUNING PDM, since PDM and ECU are physically close. This is intentional: instead of routing wires from the central panel, +12V for IGN (CH1) and BATT are taken locally from the PDM.
 
-### Зачем
+### Why
 
-- Устраняются длинные минусовые трассы через весь жгут (до 1.5–2 м каждая)
-- Масса берётся локально — меньше падение напряжения, меньше медного веса
-- Каждая коса становится «только плюсовой» — проще сборка и диагностика
-- Массовые шины (двигатель, салон, багажник) остаются, но теперь питаются от ответных частей разъёмов, а не от центральной панели
+- Eliminates long ground runs through the entire harness (up to 1.5–2 m each)
+- Ground is local — less voltage drop, less copper weight
+- Each harness becomes "positive-only" — simpler assembly and diagnostics
+- Ground buses (engine bay, cabin, trunk) remain, but are now fed from connector mating sides, not from the central panel
 
-### Правила
+### Rules
 
-1. **Каждый потребитель** в косе получает свой GND-пин в разъёме (или один GND на группу малоточных потребителей)
-2. **Ответная часть разъёма** — каждый GND-пин соединяется с кузовом коротким проводом (200–400 мм) к ближайшей точке массы
-3. **Сечение GND-пина** = сечение плюсового провода того же потребителя
-4. **Общая шина массы** в каждой зоне (под капотом, багажник, салон) остаётся — это точка на кузове, куда приходят GND-провода от ответной части разъёмов
-5. **MICTUNING** по-прежнему получает массу через корпус (без изменений)
-6. **Силовые цепи** (стартер 50 мм², генератор) — без изменений, масса двигателя/генератора на кузов напрямую
+1. **Each consumer** in the harness gets its own GND pin in the connector (or one GND for a group of low-current consumers)
+2. **Connector mating side** — each GND pin connects to the body with a short wire (200–400 mm) to the nearest ground point
+3. **GND pin gauge** = gauge of the positive wire for the same consumer
+4. **Common ground bus** in each zone (engine bay, trunk, cabin) remains — this is the body point where GND wires from connector mating sides converge
+5. **MICTUNING** still grounds through its housing (unchanged)
+6. **High-current circuits** (starter 50 mm², alternator) — unchanged; engine/alternator ground to body directly
 
-### Что меняется в разъёмах
+### Connector Changes
 
-| Разъём | Было | Стало |
-|--------|------|-------|
-| X100 (передняя коса) | 1 общий GND-пин | GND-пин на каждый потребитель: фары L/R, вентилятор, габариты L/R, поворотники L/R, реле стартера |
-| X200 (задняя коса) | 1 общий GND-пин | GND-пин на каждый потребитель: габариты, поворотники L/R, стоп-сигналы, бензонасос |
-| X300 (салонная коса) | 1 общий GND-пин | GND-пин на каждый потребитель: печка, дворники, OBD |
-| X400 (коса ЭБУ) | — | GND-пин на каждый потребитель: GND IGN, GND BATT |
+| Connector | Before | After |
+|-----------|--------|-------|
+| X100 (front harness) | 1 shared GND pin | GND pin per consumer: headlights L/R, fan, parking L/R, turn signals L/R, starter relay |
+| X200 (rear harness) | 1 shared GND pin | GND pin per consumer: parking, turn signals L/R, stop lights, fuel pump |
+| X300 (cabin harness) | 1 shared GND pin | GND pin per consumer: heater, wipers, OBD |
+| X400 (ECU harness) | — | GND pin per consumer: GND IGN, GND BATT |
