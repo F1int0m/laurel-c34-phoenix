@@ -19,7 +19,7 @@ Read the harness brief, analyze its structure, and generate a step-by-step build
 
 ## Reference: harness.design Editing Rules
 
-Compressed editing guide is at `.claude/arch_context.md`. Use it as the primary reference for schemas, operations, and conventions. Only re-read specific `read_editing_guide` MCP topics when uncertain or before complex edits — not every time the skill runs.
+Compressed editing guide is at `claude_docs/editing-guide-index.md`. Use it as the primary reference for schemas, operations, and conventions. Only re-read specific `read_editing_guide` MCP topics when uncertain or before complex edits — not every time the skill runs.
 
 ## Workflow
 
@@ -75,6 +75,8 @@ If the harness already exists in **harness.design**:
 
 This determines whether to create a new harness or extend an existing one.
 
+Record the query results in the "Harness State (at plan time)" section of the output plan.
+
 ### Step 4: Produce the Build Plan
 
 Generate `HARN-PLAN.md` using the template below.
@@ -88,6 +90,37 @@ Generate `HARN-PLAN.md` using the template below.
 **Generated:** [ISO-date]
 **Target harness:** [new | existing: documentId]
 **Strategy:** [single-phase | multi-module | incremental]
+
+## Harness State (at plan time)
+
+> Populated by /harness-plan when targeting an existing harness.
+> Used by /harness-do to skip redundant MCP queries.
+
+**documentId:** [from list_harnesses, e.g. K1vY, or "new"]
+
+### Existing Component Counts
+
+| Type | Count |
+|------|-------|
+| Connectors | N |
+| Terminals | N |
+| Splices | N |
+| Wires | N |
+| Bundles | N |
+| Mates | N |
+| Resistors | N |
+| Diodes | N |
+| Frames | N |
+
+### Existing Component IDs
+
+| Display ID | Internal ID | Type | Label | Notes |
+|------------|-------------|------|-------|-------|
+| ... | ... | ... | ... | ... |
+
+### Required Editing Guide Topics
+
+[comma-separated list, e.g. "connectors, wiring, splices, bundles, mates"]
 
 ## Build Order
 

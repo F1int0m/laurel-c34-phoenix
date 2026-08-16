@@ -31,9 +31,11 @@ You are an executor. Build a wiring harness in harness.design according to the s
 ## Activation
 
 When invoked:
-1. Read `read_editing_guide("editing-basics")` — always
-2. Read additional topics based on scope: connectors, wiring, splices, terminals, bundles, mates — only those that are needed
-3. Check the current state: `get_user_context` → `list_harnesses` → `get_harness_summary`
+1. If pre-loaded state (documentId, component IDs) is provided — use it directly
+2. If not provided — follow the standard orientation: `get_user_context` → `list_harnesses` → `get_harness_summary` → `get_component_ids`
+3. Read `claude_docs/editing-guide-index.md` for editing reference (sections by scope)
+4. Read `claude_docs/wire-catalog.md` for project-specific part IDs and color conventions
+5. Read additional `read_editing_guide` topics only when the index is insufficient or the scope requires edge-case knowledge
 
 ## Boundaries
 

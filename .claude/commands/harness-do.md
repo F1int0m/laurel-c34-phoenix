@@ -22,14 +22,18 @@ Read the `HARN-PLAN.md` to understand:
 2. **Build order** — dependency graph of phases
 3. **Scope per phase** — parts, connectors, terminals, splices, wires, bundles, mates
 
-### Step 2: Check Current State
+### Step 2: Load State
 
-If the target harness exists in **harness.design**:
-- `list_harnesses` → locate the harness
-- `get_harness_summary` → determine what has already been built
-- `get_component_ids` → determine which IDs are already in use
+Read the "Harness State (at plan time)" section from HARN-PLAN.md first:
+- If the section exists and contains documentId → use it directly (skip MCP state queries)
+- If the section is missing or documentId is blank → check `.claude/harness-cache.md`:
+  - If cache documentId matches the plan's target → use cached component IDs as baseline
+  - If cache is stale or missing → fall back to MCP queries:
+    - `list_harnesses` → locate the harness
+    - `get_harness_summary` → determine what has already been built
+    - `get_component_ids` → determine which IDs are already in use
 
-If the harness does not exist:
+If the harness does not exist (documentId is "new"):
 - `create_harness` → create a new harness document
 
 ### Step 3: Execute via harness-builder Agent
@@ -66,6 +70,13 @@ Produce a build report:
 - What was skipped (already exists)
 - Any issues encountered
 - BOM summary via `get_bom`
+
+### Step 7: Update Cache
+
+After a successful build session, update `.claude/harness-cache.md`:
+1. Use the `get_component_ids` and `get_harness_summary` results from verification (Step 5)
+2. Write the results to `.claude/harness-cache.md` using the standard format
+3. Set `lastUpdated` to current date
 
 ## Rules
 
